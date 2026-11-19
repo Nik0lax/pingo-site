@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#070b13">
-  <meta name="description" content="Conheça o Pingo: seu assistente inteligente para Windows. Controle o PC por voz, use o WhatsApp, analise sua tela e converta arquivos direto do topo da tela. Piloto gratuito encerrado.">
+  <meta name="description" content="Conheça o Pingo em gravações reais: assistente inteligente para Windows, WhatsApp, Spotify, IA, rotinas, personalização, atalhos e muito mais. Piloto gratuito encerrado.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Pingo — seu PC ganhou um novo jeito de conversar">
-  <meta property="og:description" content="Um assistente, infinitas possibilidades. Conheça as funcionalidades do Pingo em demonstrações reais.">
+  <meta property="og:description" content="Veja o Pingo funcionando de verdade: vídeos do aplicativo no Windows, sem animações que fingem ser o produto.">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:url" content="https://nik0lax.github.io/pingo-site/">
   <meta name="color-scheme" content="dark">
@@ -316,6 +316,93 @@
       .js .reveal { opacity: 1; transform: none; }
       .hero-pill .accent-dot { box-shadow: none; }
     }
+
+    /* Real product footage: no simulated UI in the hero */
+    .hero-real-desktop { overflow: hidden; }
+    .hero-real-desktop .desktop-top { gap: 10px; justify-content: flex-start; }
+    .hero-real-desktop .desktop-top > span:nth-child(2) { margin-left: auto; }
+    .real-indicator { display: inline-flex; align-items: center; gap: 7px; font-size: 9px; letter-spacing: .07em; color: #9ce3cf !important; white-space: nowrap; }
+    .real-indicator .accent-dot { width: 5px; height: 5px; }
+    .hero-real-video { width:100%; aspect-ratio:8/5; height: auto; object-fit: cover; display: block; background: #0a101b; }
+    .hero-scenebar { display: flex; gap: 7px; align-items: center; padding: 11px 11px 12px; background: rgba(9,17,27,.98); border-top: 1px solid rgba(168,198,230,.14); }
+    .hero-scene, .hero-expand { min-width: 0; padding: 8px 11px; border:1px solid rgba(168,198,230,.15); border-radius: 8px; background: rgba(255,255,255,.025); color: #b5c8db; font-size: 10px; font-weight: 750; cursor: pointer; transition: transform .2s, border-color .2s, background .2s, color .2s; }
+    .hero-scene:hover, .hero-expand:hover { transform: translateY(-2px); border-color: rgba(98,222,255,.45); color: white; }
+    .hero-scene.is-active { background: rgba(98,222,255,.13); border-color: rgba(98,222,255,.42); color: #baf2ff; }
+    .hero-expand { margin-left:auto; white-space:nowrap; }
+    .hero-verification { display:flex;align-items:center; gap:12px; margin: 19px 4px 0; padding:13px 16px; border-radius:13px; border:1px solid rgba(121,238,201,.18); background: rgba(121,238,201,.04); }
+    .hero-verification-icon { width:26px; height:26px; border-radius:50%; display:grid; place-items:center; background:rgba(121,238,201,.13); color:var(--green); font-size: 14px; font-weight:800; }
+    .hero-verification b { display: block; font-size: 12px; }
+    .hero-verification span:last-child { display:block; color:var(--muted); font-size:11px; }
+    /* Playback-based experience rather than simulated assistant chat */
+    .example-live {overflow:hidden;}
+    .experience-video {width:100%;aspect-ratio:8/5;object-fit:cover;background:#070b11;display:block;border-radius:12px;border:1px solid rgba(98,222,255,.12);}
+    .experience-foot {display:flex;justify-content:space-between;align-items:center;gap:15px;margin:15px 0 1px;}
+    .experience-foot b {display:block;font-size:14px;letter-spacing:-.02em;}
+    .experience-foot p {font-size:11px;color:var(--muted);margin:5px 0 0;line-height:1.5;}
+    .experience-expand {cursor:pointer;border:1px solid rgba(98,222,255,.28);border-radius:9px;color:#b9efff;background:rgba(98,222,255,.07);padding:8px 11px;font-size:11px;font-weight:750;white-space:nowrap;}
+    .experience-expand:hover {border-color:var(--cyan);background:rgba(98,222,255,.14);}
+    @media(max-width:560px) {.experience-foot{align-items:flex-start;}.experience-foot p{font-size:10px;}}
+    /* Searchable, filtered gallery of source recordings */
+    .footage-intro { display:grid; grid-template-columns:1fr auto; gap:22px; align-items:center; margin-top:53px; border-radius:25px; padding:clamp(28px,4vw,43px); background:linear-gradient(110deg,#112338,#0b1726 67%,#0a121e); border:1px solid rgba(98,222,255,.2); position:relative; overflow:hidden; }
+    .footage-intro:before { content:""; width:320px;height:320px;position:absolute;right:-120px;top:-220px;border:1px solid rgba(98,222,255,.17);border-radius:50%;box-shadow:0 0 0 48px rgba(98,222,255,.02),0 0 0 100px rgba(98,222,255,.015);pointer-events:none; }
+    .footage-pill { display:inline-flex; align-items:center; gap:9px; padding:6px 10px; font-size:10px; letter-spacing:.12em; color:var(--green); background:rgba(121,238,201,.055); border:1px solid rgba(121,238,201,.19); border-radius:99px; font-weight:800; }
+    .footage-intro h3 { font-size:clamp(28px,4.5vw,47px); line-height:1.15; letter-spacing:-.05em; margin:18px 0 10px; }
+    .footage-intro p { max-width:610px;color:var(--muted);margin:0;font-size:14px; }
+    .footage-aside { display:grid;justify-items:center;align-content:center;min-width:155px;border-left:1px solid rgba(164,214,239,.14);padding-left:30px;line-height:1.3;text-align:center; }
+    .footage-aside b {font-size:68px;letter-spacing:-.09em;color:var(--cyan);line-height:1;}
+    .footage-aside span {font-size:11px;font-weight:750;color:#ccdef0;margin-top:9px;}
+    .footage-aside small {font-size:10px;color:#829ab2;margin-top:4px;}
+    .real-gallery-head { display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:26px;margin-bottom:22px; }
+    .gallery-filters { display:flex;flex-wrap:wrap;gap:8px; }
+    .gallery-filter { border:1px solid rgba(168,198,230,.17);background:rgba(255,255,255,.028);border-radius:10px;color:#b2c6d9;font-size:12px;font-weight:740; padding:9px 13px;cursor:pointer;transition:all .22s; }
+    .gallery-filter span {font-size:10px;opacity:.8;margin-left:3px;}
+    .gallery-filter:hover,.gallery-filter.is-selected { border-color:rgba(98,222,255,.48);background:rgba(98,222,255,.11);color:#e9faff; }
+    .gallery-caption {font-size:11px;white-space:nowrap;color:#8ba3b9;margin:0;}
+    .real-gallery {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:17px;}
+    .real-tile {appearance:none;position:relative;min-width:0;display:flex;flex-direction:column;text-align:left;padding:0;overflow:hidden;border-radius:21px;border:1px solid rgba(168,198,230,.15);background:linear-gradient(145deg,#132235,#0d1725);color:var(--text);cursor:pointer;transition:transform .3s,border-color .3s,box-shadow .3s;}
+    .real-tile:hover {transform:translateY(-6px);border-color:rgba(98,222,255,.45);box-shadow:0 25px 55px rgba(0,0,0,.25);}
+    .real-tile[hidden] {display:none!important;}
+    .real-tile-media {position:relative;display:block; width:100%;aspect-ratio:8/5;background:#0c1420;overflow:hidden;border-bottom:1px solid rgba(168,198,230,.1);}
+    .real-tile-media:after {content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(4,11,19,.46));pointer-events:none;}
+    .real-tile-media img {display:block;width:100%;height:100%;object-fit:cover;transition:transform .65s cubic-bezier(.2,.8,.2,1),filter .45s;}
+    .real-tile:hover img {transform:scale(1.065);filter:brightness(.8);}
+    .real-play {position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);display:grid;place-items:center;width:57px;height:57px;border:1px solid rgba(240,251,255,.45);border-radius:50%;background:rgba(7,17,29,.7);backdrop-filter:blur(10px);color:white;font-size:20px;padding-left:3px;opacity:.8;transition:transform .3s,background .3s,opacity .3s;}
+    .real-tile:hover .real-play {transform:translate(-50%,-50%) scale(1.07);background:rgba(98,222,255,.25);opacity:1;}
+    .real-corner {position:absolute;z-index:1;top:13px;left:14px;padding:5px 9px;border:1px solid rgba(255,255,255,.13);border-radius:7px;background:rgba(5,13,22,.74);backdrop-filter:blur(12px);font-size:10px;letter-spacing:.12em;color:#dceaf7;font-weight:750;}
+    .real-tile-content {display:flex;flex-direction:column;flex:1;padding:21px 22px 20px;}
+    .real-tile-kicker {font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#80ccdd;font-weight:800;}
+    .small-dot {opacity:.6;padding:0 3px;}
+    .real-tile-content strong {font-size:20px;letter-spacing:-.035em;line-height:1.3;margin:9px 0 8px;}
+    .real-tile-desc {color:#98b1c7;font-size:12px;line-height:1.7;min-height:61px;}
+    .real-watch {display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:15px;border-top:1px solid rgba(168,198,230,.10);font-size:11px;font-weight:760;color:var(--cyan);}
+    .real-watch span {font-size:17px;transition:transform .2s;}
+    .real-tile:hover .real-watch span {transform:translate(3px,-2px);}
+    .footage-note { margin:24px 0 0; padding:13px 18px; border-radius:12px; border:1px solid rgba(121,238,201,.13); color:#95b0c2; background:rgba(121,238,201,.035); font-size:12px; }
+    .footage-note span {color:var(--green);margin-right:7px;}
+    .original-demos-heading { margin:91px 0 22px;padding-top:30px;border-top:1px solid rgba(168,198,230,.13);scroll-margin-top:110px; }
+    .original-demos-heading h3 {font-size:clamp(27px,3.5vw,42px);letter-spacing:-.05em;margin:11px 0 8px;}
+    .original-demos-heading p {color:var(--muted);font-size:14px;margin:0;}
+    /* Accessible product video dialog */
+    .video-dialog {position:fixed; width:min(1040px,calc(100vw - 32px));max-height:min(93vh,950px);padding:0;border:1px solid rgba(129,210,248,.33);border-radius:24px;background:#0a121f;color:#f4faff;box-shadow:0 45px 160px #000;overflow:auto;}
+    .video-dialog::backdrop {background:rgba(0,4,12,.82);backdrop-filter:blur(12px);}
+    .video-dialog-inner {padding:clamp(14px,2.8vw,28px);}
+    .video-dialog-top {display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:18px;}
+    .dialog-eyebrow {display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.12em;font-weight:800;color:var(--green);}
+    .video-dialog-top h2 {font-size:clamp(21px,3vw,31px);letter-spacing:-.04em;line-height:1.2;margin:7px 0 0;}
+    .dialog-close { flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.045);color:#e6f4ff;border:1px solid rgba(168,198,230,.2);font-size:18px;cursor:pointer; }
+    .dialog-close:hover {background:rgba(98,222,255,.13);}
+    #videoDialogPlayer {display:block;width:100%;max-height:calc(86vh - 165px);height:auto;aspect-ratio:8/5;object-fit:contain;background:#080d15;border:1px solid rgba(168,198,230,.12);border-radius:13px;}
+    .video-dialog-bottom {display:flex;justify-content:space-between;gap:18px;align-items:center;padding-top:15px;}
+    #videoDialogTime {color:var(--cyan);font-size:12px;font-weight:760;}
+    .video-dialog-bottom p {font-size:11px;margin:4px 0 0;color:#829eb6;}
+    .dialog-nav {display:flex;gap:8px;flex-shrink:0;}
+    .dialog-nav button {padding:9px 11px;white-space:nowrap;border:1px solid rgba(168,198,230,.18);border-radius:10px;background:rgba(255,255,255,.045);color:#d1e9fb;font-size:11px;font-weight:750;cursor:pointer;}
+    .dialog-nav button:hover {border-color:rgba(98,222,255,.5);background:rgba(98,222,255,.08);}
+    @media(max-width:1060px) {.real-gallery {grid-template-columns:repeat(2,minmax(0,1fr));}.gallery-caption{display:none;}}
+    @media(max-width:720px) {.hero-real-desktop .desktop-top {font-size:10px;}.real-indicator{font-size:8px;}.hero-scenebar{gap:5px;padding:9px;}.hero-scene,.hero-expand{padding:8px 7px;font-size:9px;}.footage-intro{grid-template-columns:1fr;}.footage-aside{display:none;}.real-gallery-head{display:block;}.gallery-filters{gap:7px;}}
+    @media(max-width:560px) {.real-gallery{grid-template-columns:1fr;}.real-tile-desc{min-height:0;margin-bottom:16px;}.real-play {width:50px;height:50px;}.footage-intro{margin-top:30px;}.video-dialog-bottom{flex-direction:column;align-items:flex-start;}.dialog-nav{width:100%;}.dialog-nav button{flex:1;}.video-dialog{width:calc(100vw - 16px);border-radius:15px;}.hero-verification {padding:10px;}}
+    @media(prefers-reduced-motion:reduce) {.real-tile,.real-tile img,.real-play,.real-watch span,.hero-scene,.hero-expand{transition:none!important;}}
+
   </style>
 </head>
 <body>
@@ -341,8 +428,8 @@
       <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
       <nav class="nav" id="mainNav" aria-label="Navegação principal">
         <a class="nav-link" href="#recursos">Recursos</a>
-        <a class="nav-link" href="#experimente">Experiência</a>
-        <a class="nav-link" href="#demos">Demonstrações</a>
+        <a class="nav-link" href="#experimente">Experiência real</a>
+        <a class="nav-link" href="#demos">Vídeos reais</a>
         <a class="nav-link" href="#privacidade">Privacidade</a>
         <a class="btn btn-primary header-action" href="#disponibilidade">Status do piloto <span class="arrow" aria-hidden="true">↗</span></a>
       </nav>
@@ -364,18 +451,18 @@
         </div>
         <div class="visual-shell reveal delay-2">
           <div class="visual-orbit one" aria-hidden="true"></div><div class="visual-orbit two" aria-hidden="true"></div>
-          <div class="desktop-card" aria-label="Representação ilustrativa da experiência do Pingo no Windows">
-            <div class="desktop-top"><div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div><span>Área de trabalho · Windows</span></div>
-            <div class="notch"><div class="notch-icon"><svg aria-hidden="true"><use href="#pingo-mark"/></svg></div><div class="notch-copy"><strong>Pingo está com você</strong><small>Pronto para ouvir</small></div><div class="sound-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
-            <div class="desktop-content">
-              <div class="message-preview"><div class="message-label"><span>Seu comando</span><span class="accent-dot"></span></div><p><span id="heroPrompt">Ei, Pingo, o que tenho para hoje?</span><span class="typing" aria-hidden="true"></span></p></div>
-              <div class="response-preview"><svg aria-hidden="true"><use href="#i-spark"/></svg><div><b>RESPOSTA DO PINGO</b><span id="heroReply">Posso mostrar sua agenda e seus lembretes.</span></div></div>
-              <div class="desktop-bottom"><span>Assistente integrado à sua rotina</span><span class="bottom-chip">● Pronto para ajudar</span></div>
+          <div class="desktop-card hero-real-desktop">
+            <div class="desktop-top"><div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div><span>Captura real do Pingo · Windows</span><span class="real-indicator"><span class="accent-dot"></span> GRAVAÇÃO REAL</span></div>
+            <video id="heroRealVideo" class="hero-real-video" src="demos/personalizar.mp4" poster="demos/personalizar-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Gravação real do Pingo mostrando a personalização do mascote, acessórios e cores"></video>
+            <div class="hero-scenebar" role="group" aria-label="Selecione o vídeo em destaque">
+              <button type="button" class="hero-scene is-active" data-hero-scene="personalizar" data-hero-label="Personalização" aria-pressed="true">Personalização</button>
+              <button type="button" class="hero-scene" data-hero-scene="meu-pc" data-hero-label="Meu PC" aria-pressed="false">Meu PC</button>
+              <button type="button" class="hero-scene" data-hero-scene="spotify" data-hero-label="Spotify" aria-pressed="false">Spotify</button>
+              <button type="button" class="hero-expand" id="heroExpand" aria-label="Ampliar vídeo de personalização do Pingo">↗ <span>Ampliar</span></button>
             </div>
           </div>
-          <div class="floating-card float-left" aria-hidden="true"><div class="floating-icon">◷</div><div><strong>Lembrete criado</strong><small>Reunião • 15:30</small></div></div>
-          <div class="floating-card float-right" aria-hidden="true"><div class="floating-icon">♫</div><div><strong>Música no controle</strong><small>Spotify por voz</small></div></div>
-          <p class="visual-caption">Prévia ilustrativa · Conheça as gravações reais logo abaixo</p>
+          <div class="hero-verification"><span class="hero-verification-icon">✓</span><div><b>Nada de tela inventada</b><span>As imagens acima foram capturadas do aplicativo rodando no Windows.</span></div></div>
+          <p class="visual-caption">Trechos reais, editados e sem áudio · Escolha uma função para assistir</p>
         </div>
       </div>
     </section>
@@ -398,20 +485,70 @@
           <article class="feature-card reveal" data-spotlight><span class="feature-corner">06 / MÚSICA</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-music"/></svg></div><h3>Música no comando de voz</h3><p>Peça uma música e deixe o Pingo cuidar do Spotify.</p></article>
           <article class="feature-card reveal delay-1" data-spotlight><span class="feature-corner">07 / AUTOMAÇÕES</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-lightning"/></svg></div><h3>Rotinas do seu jeito</h3><p>Reúna várias ações em um só comando, do seu jeito de trabalhar.</p></article>
           <article class="feature-card reveal delay-2" data-spotlight><span class="feature-corner">08 / LIBERDADE</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-spark"/></svg></div><h3>IA quando você quiser</h3><p>Conecte um serviço de IA opcional para perguntas e tarefas mais complexas.</p></article>
+          <article class="feature-card reveal" data-spotlight><span class="feature-corner">09 / SEU PC</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-screen"/></svg></div><h3>Seu PC em uma única visão</h3><p>Acompanhe processador, memória, disco e controles úteis diretamente no painel Meu PC.</p></article>
+          <article class="feature-card reveal delay-1" data-spotlight><span class="feature-corner">10 / PERSONALIZAR</span><div class="feature-icon"><svg aria-hidden="true"><use href="#pingo-mark"/></svg></div><h3>Um Pingo com sua cara</h3><p>Mude cores, expressões e acessórios. Veja a personalidade do assistente tomar forma.</p></article>
+          <article class="feature-card reveal delay-2" data-spotlight><span class="feature-corner">11 / ATALHOS</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-lightning"/></svg></div><h3>Atalhos ao alcance</h3><p>Consulte comandos e atalhos configurados para acessar funções rapidamente.</p></article>
+          <article class="feature-card reveal" data-spotlight><span class="feature-corner">12 / CÉREBRO</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-spark"/></svg></div><h3>Escolha como a IA responde</h3><p>O painel Cérebro mostra modos de operação e conexões de IA disponíveis para configurar.</p></article>
         </div>
       </div>
     </section>
     <section class="section commands-section" id="experimente" aria-labelledby="commands-title">
       <div class="container"><div class="commands-panel reveal">
-        <div><span class="eyebrow">Sinta a experiência</span><h2 id="commands-title">Você fala.<br><span class="gradient-text">O Pingo faz.</span></h2><p>Escolha um exemplo e veja como a conversa pode acontecer. Esta é uma simulação interativa dos recursos.</p>
-          <div class="examples" aria-label="Exemplos de comandos"><button class="example-button active" type="button" data-example="0" aria-pressed="true">“Toca minha playlist no Spotify”</button><button class="example-button" type="button" data-example="1" aria-pressed="false">“Me lembra da reunião às 15h”</button><button class="example-button" type="button" data-example="2" aria-pressed="false">“Converte esse arquivo para PDF”</button><button class="example-button" type="button" data-example="3" aria-pressed="false">“Olha minha tela e explica isso”</button></div>
+        <div><span class="eyebrow">Você está vendo o aplicativo real</span><h2 id="commands-title">Sem mockups.<br><span class="gradient-text">Só o Pingo.</span></h2><p>Escolha uma função e acompanhe um trecho real do aplicativo funcionando no Windows. As cenas são recortes da gravação original.</p>
+          <div class="examples" aria-label="Escolher demonstração real"><button class="example-button active" type="button" data-example="0" aria-pressed="true">Spotify buscando uma música</button><button class="example-button" type="button" data-example="1" aria-pressed="false">Conversa e comandos do Pingo</button><button class="example-button" type="button" data-example="2" aria-pressed="false">Rotinas com várias etapas</button><button class="example-button" type="button" data-example="3" aria-pressed="false">Mascote e cores personalizáveis</button></div>
         </div>
-        <div class="example-screen"><div class="example-bar"><span><span class="accent-dot"></span> CONVERSANDO COM O PINGO</span><span>DEMONSTRAÇÃO</span></div><div class="chat-row user"><span class="chat-who">Você</span><div class="chat-bubble" id="exampleQuestion">Toca minha playlist no Spotify.</div></div><div class="chat-row bot"><span class="chat-who">💧 Pingo</span><div class="chat-bubble" id="exampleAnswer" role="status" aria-live="polite">Vou abrir o Spotify e reproduzir sua música. 🎵</div></div><div class="example-foot"><span>Exemplo ilustrativo, não conectado ao seu PC</span><span><span class="accent-dot"></span> Seu fluxo, mais simples</span></div></div>
+        <div class="example-screen example-live"><div class="example-bar"><span><span class="accent-dot"></span> PINGO GRAVADO NO WINDOWS</span><span>CAPTURA REAL</span></div>
+          <video id="experienceRealVideo" class="experience-video" src="demos/spotify.mp4" poster="demos/spotify-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Recorte real do Pingo buscando uma música no Spotify"></video>
+          <div class="experience-foot"><div><b id="experienceTitle">Spotify em ação</b><p id="experienceDesc">Pingo buscando e acompanhando uma música no topo da tela.</p></div><button type="button" id="experienceExpand" class="experience-expand" aria-label="Abrir demonstração do Spotify em tela ampliada">Ampliar ↗</button></div>
+          <div class="example-foot"><span>Gravação real, editada sem áudio · Não é um controle remoto do seu PC</span><span><span class="accent-dot"></span> Produto real</span></div>
+        </div>
       </div></div>
     </section>
     <section class="section demos-section" id="demos" aria-labelledby="demos-title">
       <div class="container">
-        <div class="center-heading reveal"><span class="eyebrow">Nada de promessas vagas</span><h2 class="section-title" id="demos-title">Veja o Pingo <span class="gradient-text">acontecer.</span></h2><p class="section-sub">Gravações reais das funcionalidades em ação, direto da interface do Pingo.</p></div>
+        <div class="center-heading reveal"><span class="eyebrow">Nada de promessas vagas</span><h2 class="section-title" id="demos-title">Veja o Pingo <span class="gradient-text">acontecer.</span></h2><p class="section-sub">A tela do aplicativo, gravada no Windows. Nove recortes novos, somados às três demonstrações originais de recursos específicos.</p></div>
+        <div class="footage-intro reveal"><div><span class="footage-pill"><span class="accent-dot"></span> PINGO RODANDO DE VERDADE</span><h3>Explore por dentro.<br><span class="gradient-text">Descubra o que ele faz.</span></h3><p>Toque em cada vídeo para ampliar. Os cortes mostram a interface real capturada no PC, sem reconstruir telas ou simular ações.</p></div><div class="footage-aside"><b>09</b><span>novos recortes da gravação</span><small>+ 3 demos originais abaixo</small></div></div>
+        <div class="real-gallery-head reveal"><div class="gallery-filters" role="group" aria-label="Filtrar demonstrações por categoria"><button type="button" class="gallery-filter is-selected" data-gallery-filter="all" aria-pressed="true">Todos <span>09</span></button><button type="button" class="gallery-filter" data-gallery-filter="assistente" aria-pressed="false">Assistente</button><button type="button" class="gallery-filter" data-gallery-filter="ia" aria-pressed="false">IA</button><button type="button" class="gallery-filter" data-gallery-filter="automacao" aria-pressed="false">Automação</button><button type="button" class="gallery-filter" data-gallery-filter="visual" aria-pressed="false">Personalização</button></div><p class="gallery-caption">Selecione um vídeo para visualizar em destaque <span aria-hidden="true">↗</span></p></div>
+        <div class="real-gallery" id="realGallery">
+          <button type="button" class="real-tile reveal" data-clip="demos/personalizar.mp4" data-poster="demos/personalizar-poster.jpg" data-title="Personalização do Pingo" data-tags="visual" data-timestamp="47–59s da gravação" aria-label="Assistir vídeo real: Personalização do Pingo">
+            <span class="real-tile-media"><img src="demos/personalizar-poster.jpg" alt="Captura da gravação real: Personalização do Pingo" loading="lazy" decoding="async" width="1200" height="750"><span class="real-play" aria-hidden="true">▶</span><span class="real-corner">01 / 09</span></span>
+            <span class="real-tile-content"><span class="real-tile-kicker">Visual <span class="small-dot">·</span> Vídeo real</span><strong>Personalização do Pingo</strong><span class="real-tile-desc">Cores, acessórios e expressões mudando em tempo real.</span><span class="real-watch">Assistir demonstração <span aria-hidden="true">↗</span></span></span>
+          </button>
+          <button type="button" class="real-tile reveal" data-clip="demos/spotify.mp4" data-poster="demos/spotify-poster.jpg" data-title="Spotify no entalho" data-tags="assistente" data-timestamp="13–25s da gravação" aria-label="Assistir vídeo real: Spotify no entalho">
+            <span class="real-tile-media"><img src="demos/spotify-poster.jpg" alt="Captura da gravação real: Spotify no entalho" loading="lazy" decoding="async" width="1200" height="750"><span class="real-play" aria-hidden="true">▶</span><span class="real-corner">02 / 09</span></span>
+            <span class="real-tile-content"><span class="real-tile-kicker">Assistente <span class="small-dot">·</span> Vídeo real</span><strong>Spotify no entalho</strong><span class="real-tile-desc">Veja o Pingo buscando e acompanhando uma música diretamente no topo da tela.</span><span class="real-watch">Assistir demonstração <span aria-hidden="true">↗</span></span></span>
+          </button>
+          <button type="button" class="real-tile reveal" data-clip="demos/inicio-painel.mp4" data-poster="demos/inicio-painel-poster.jpg" data-title="Central de configurações" data-tags="assistente" data-timestamp="41–43s da gravação" aria-label="Assistir vídeo real: Central de configurações">
+            <span class="real-tile-media"><img src="demos/inicio-painel-poster.jpg" alt="Captura da gravação real: Central de configurações" loading="lazy" decoding="async" width="1200" height="750"><span class="real-play" aria-hidden="true">▶</span><span class="real-corner">03 / 09</span></span>
+            <span class="real-tile-content"><span class="real-tile-kicker">Interface <span class="small-dot">·</span> Vídeo real</span><strong>Central de configurações</strong><span class="real-tile-desc">Uma visão da tela principal do Pingo e suas opções.</span><span class="real-watch">Assistir demonstração <span aria-hidden="true">↗</span></span></span>
+          </button>
+          <button type="button" class="real-tile reveal" data-clip="demos/meu-pc.mp4" data-poster="demos/meu-pc-poster.jpg" data-title="Monitoramento do PC" data-tags="assistente" data-timestamp="31–33s da gravação" aria-label="Assistir vídeo real: Monitoramento do PC">
+            <span class="real-tile-media"><img src="demos/meu-pc-poster.jpg" alt="Captura da gravação real: Monitoramento do PC" loading="lazy" decoding="async" width="1200" height="750"><span class="real-play" aria-hidden="true">▶</span><span class="real-corner">04 / 09</span></span>
+            <span class="real-tile-content"><span class="real-tile-kicker">Sistema <span class="small-dot">·</span> Vídeo real</span><strong>Monitoramento do PC</strong><span class="real-tile-desc">Indicadores de processador, memória, armazenamento e atalhos do Windows.</span><span class="real-watch">Assistir demonstração <span aria-hidden="true">↗</span></span></span>
+          </button>
+          <button type="button" class="real-tile reveal" data-clip="demos/conversa.mp4" data-poster="demos/conversa-poster.jpg" data-title="Converse pelo Pingo" data-tags="assistente ia" data-timestamp="33–36s da gravação" aria-label="Assistir vídeo real: Converse pelo Pingo">
+            <span class="real-tile-media"><img src="demos/conversa-poster.jpg" alt="Captura da gravação real: Converse pelo Pingo" loading="lazy" decoding="async" width="1200" height="750"><span class="real-play" aria-hidden="true">▶</span><span class="real-corner">05 / 09</span></span>
+            <span class="real-tile-content"><span class="real-tile-kicker">Conversa <span class="small-dot">·</span> Vídeo real</span><strong>Converse pelo Pingo</strong><span class="real-tile-desc">Histórico de conversa, comandos rápidos e opções de assistentes na interface.</span><span class="real-watch">Assistir demonstração <span aria-hidden="true">↗</span></span></span>
+          </button>
+          <button type="button" class="real-tile reveal" data-clip="demos/cerebro.mp4" data-poster="demos/cerebro-poster.jpg" data-title="Painel Cérebro" data-tags="ia" data-timestamp="43–45s da gravação" aria-label="Assistir vídeo real: Painel Cérebro">
+            <span class="real-tile-media"><img src="demos/cerebro-poster.jpg" alt="Captura da gravação real: Painel Cérebro" loading="lazy" decoding="async" width="1200" height="750"><span class="real-play" aria-hidden="true">▶</span><span class="real-corner">06 / 09</span></span>
+            <span class="real-tile-content"><span class="real-tile-kicker">IA <span class="small-dot">·</span> Vídeo real</span><strong>Painel Cérebro</strong><span class="real-tile-desc">Modos de inteligência e provedores exibidos nas configurações.</span><span class="real-watch">Assistir demonstração <span aria-hidden="true">↗</span></span></span>
+          </button>
+          <button type="button" class="real-tile reveal" data-clip="demos/rotinas.mp4" data-poster="demos/rotinas-poster.jpg" data-title="Rotinas personalizadas" data-tags="automacao" data-timestamp="45–47s da gravação" aria-label="Assistir vídeo real: Rotinas personalizadas">
+            <span class="real-tile-media"><img src="demos/rotinas-poster.jpg" alt="Captura da gravação real: Rotinas personalizadas" loading="lazy" decoding="async" width="1200" height="750"><span class="real-play" aria-hidden="true">▶</span><span class="real-corner">07 / 09</span></span>
+            <span class="real-tile-content"><span class="real-tile-kicker">Automação <span class="small-dot">·</span> Vídeo real</span><strong>Rotinas personalizadas</strong><span class="real-tile-desc">Rotinas com frases de ativação e passos encadeados no editor.</span><span class="real-watch">Assistir demonstração <span aria-hidden="true">↗</span></span></span>
+          </button>
+          <button type="button" class="real-tile reveal" data-clip="demos/musica-painel.mp4" data-poster="demos/musica-painel-poster.jpg" data-title="Controle musical" data-tags="assistente" data-timestamp="37–40s da gravação" aria-label="Assistir vídeo real: Controle musical">
+            <span class="real-tile-media"><img src="demos/musica-painel-poster.jpg" alt="Captura da gravação real: Controle musical" loading="lazy" decoding="async" width="1200" height="750"><span class="real-play" aria-hidden="true">▶</span><span class="real-corner">08 / 09</span></span>
+            <span class="real-tile-content"><span class="real-tile-kicker">Música <span class="small-dot">·</span> Vídeo real</span><strong>Controle musical</strong><span class="real-tile-desc">O painel compacto de música com opções de reprodução.</span><span class="real-watch">Assistir demonstração <span aria-hidden="true">↗</span></span></span>
+          </button>
+          <button type="button" class="real-tile reveal" data-clip="demos/atalhos.mp4" data-poster="demos/atalhos-poster.jpg" data-title="Gerenciador de atalhos" data-tags="automacao" data-timestamp="59–62s da gravação" aria-label="Assistir vídeo real: Gerenciador de atalhos">
+            <span class="real-tile-media"><img src="demos/atalhos-poster.jpg" alt="Captura da gravação real: Gerenciador de atalhos" loading="lazy" decoding="async" width="1200" height="750"><span class="real-play" aria-hidden="true">▶</span><span class="real-corner">09 / 09</span></span>
+            <span class="real-tile-content"><span class="real-tile-kicker">Produtividade <span class="small-dot">·</span> Vídeo real</span><strong>Gerenciador de atalhos</strong><span class="real-tile-desc">Lista de atalhos e opções disponíveis no painel de configurações.</span><span class="real-watch">Assistir demonstração <span aria-hidden="true">↗</span></span></span>
+          </button>
+        </div>
+        <div class="footage-note reveal"><span>●</span> Todos os nove recortes foram extraídos da captura de 19/11/2026. Vídeos sem áudio e enquadrados para destacar o Pingo; as telas mostram uma versão em desenvolvimento.</div>
+        <div class="original-demos-heading reveal" id="originais"><span class="eyebrow">Outras funções, outras gravações</span><h3>O Pingo além do painel.</h3><p>Três gravações anteriores mostram recursos específicos que não aparecem com detalhes na nova captura.</p></div>
         <div class="demo-stack">
           <article class="demo-row reveal"><div class="demo-media"><div class="video-toolbar"><div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div><strong>Pingo / Olhar a tela</strong><span class="video-tag">DEMO REAL</span></div><div class="video-stage"><video src="demos/olhar.mp4" poster="demos/olhar-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Vídeo real da função Olhar a tela do Pingo"></video></div><div class="video-foot"><span>Gravação real · IA contextual</span><button class="video-control" type="button" data-video-control aria-label="Pausar demonstração de olhar a tela">❚❚ Pausar</button></div></div><div class="demo-text"><span class="demo-kicker">01 / Inteligência visual</span><h3>Sua tela tem uma pergunta?<br><span class="gradient-text">O Pingo tem a resposta.</span></h3><p>Selecione o que está vendo e envie para a IA que você escolheu. A resposta volta para o entalho, pronta para ajudar.</p><ul class="demo-benefits"><li>Interprete textos e informações da tela</li><li>Traduza, compreenda e explore conteúdos</li><li>Controle o que você decide compartilhar com a IA</li></ul></div></article>
           <article class="demo-row reveal"><div class="demo-media"><div class="video-toolbar"><div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div><strong>Pingo / WhatsApp</strong><span class="video-tag">DEMO REAL</span></div><div class="video-stage"><video src="demos/whatsapp.mp4" poster="demos/whatsapp-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Vídeo real da função de mensagens do WhatsApp no Pingo"></video></div><div class="video-foot"><span>Gravação real · Mensagens</span><button class="video-control" type="button" data-video-control aria-label="Pausar demonstração de WhatsApp">❚❚ Pausar</button></div></div><div class="demo-text"><span class="demo-kicker">02 / Comunicação fluida</span><h3>Continue no seu jogo.<br><span class="gradient-text">E na conversa.</span></h3><p>Receba notificações, acompanhe mensagens e responda com agilidade, sem abandonar o que estava fazendo.</p><ul class="demo-benefits"><li>Respostas por texto ou áudio</li><li>Integração com o WhatsApp no Windows</li><li>Mensagens acessíveis no topo da tela</li></ul></div></article>
@@ -423,6 +560,13 @@
     <section class="section privacy-section" id="privacidade" aria-labelledby="privacy-title"><div class="container privacy-layout"><div class="reveal"><span class="eyebrow">Privacidade de verdade</span><h2 class="section-title" id="privacy-title">Seu computador.<br><span class="gradient-text">Suas escolhas.</span></h2><p class="section-sub">O Pingo foi pensado para manter a experiência perto de você, com recursos locais e integrações online que você decide utilizar.</p><div class="privacy-note">Recursos que usam serviços externos, como IA e Spotify, dependem de conexão e podem transmitir os dados necessários ao serviço escolhido.</div></div><div class="privacy-points"><article class="privacy-point reveal"><span class="privacy-point-icon"><svg aria-hidden="true"><use href="#i-mic"/></svg></span><div><h3>Reconhecimento de voz local</h3><p>Os comandos de voz são processados no próprio Windows, sem enviar o áudio para reconhecimento em nuvem.</p></div></article><article class="privacy-point reveal delay-1"><span class="privacy-point-icon"><svg aria-hidden="true"><use href="#i-lock"/></svg></span><div><h3>Dados e preferências no PC</h3><p>Lembretes, configurações e chaves de IA são mantidos localmente, com proteção para as credenciais.</p></div></article><article class="privacy-point reveal delay-2"><span class="privacy-point-icon"><svg aria-hidden="true"><use href="#i-shield"/></svg></span><div><h3>Sem telemetria de uso</h3><p>O Pingo não depende de uma conta própria ou de enviar seu histórico de uso para servidores do projeto.</p></div></article></div></div></section>
     <section class="section availability-section" id="disponibilidade" aria-labelledby="availability-title"><div class="container"><div class="availability-panel reveal"><span class="availability-badge">Piloto gratuito encerrado</span><h2 id="availability-title">O primeiro capítulo do Pingo <span class="gradient-text">já começou.</span></h2><p>Todas as licenças gratuitas disponibilizadas para a fase de testes já foram distribuídas. Por enquanto, não estamos recebendo novas solicitações para o piloto — mas você pode conhecer o projeto e acompanhar sua evolução.</p><div class="availability-actions"><a class="btn btn-primary" href="#demos">Assistir às demonstrações <span class="arrow" aria-hidden="true">↗</span></a><a class="btn btn-secondary" href="mailto:pingo.ia.nik0lax@gmail.com?subject=Contato%20sobre%20o%20Pingo">Entrar em contato <span class="arrow" aria-hidden="true">↗</span></a></div><p class="availability-small">Novas licenças ou datas de disponibilidade ainda não foram anunciadas.</p></div></div></section>
   </main>
+    <dialog id="videoDialog" class="video-dialog" aria-labelledby="videoDialogTitle">
+      <div class="video-dialog-inner"><div class="video-dialog-top"><div><span class="dialog-eyebrow"><span class="accent-dot"></span> GRAVAÇÃO REAL DO PINGO</span><h2 id="videoDialogTitle">Personalização do Pingo</h2></div><button type="button" class="dialog-close" id="videoDialogClose" aria-label="Fechar demonstração">✕</button></div>
+        <video id="videoDialogPlayer" playsinline muted loop controls preload="none" aria-label="Demonstração real do Pingo"></video>
+        <div class="video-dialog-bottom"><div><span id="videoDialogTime">Recorte da gravação original</span><p>Captura real de tela, sem áudio. A janela mostra funcionalidades existentes na versão gravada.</p></div><div class="dialog-nav"><button type="button" class="dialog-prev" aria-label="Vídeo anterior">← Anterior</button><button type="button" class="dialog-next" aria-label="Próximo vídeo">Próximo →</button></div></div>
+      </div>
+    </dialog>
+
   <footer class="site-footer"><div class="container"><div class="footer-inner"><div class="footer-brand"><a class="brand" href="#inicio"><span class="brand-mark"><svg aria-hidden="true"><use href="#pingo-mark"/></svg></span><span>Pingo<span style="color:var(--cyan)">.</span></span></a><div class="footer-caption">Tecnologia mais próxima de você. 💧</div></div><nav class="footer-links" aria-label="Links do rodapé"><a href="#recursos">Recursos</a><a href="#demos">Demonstrações</a><a href="#privacidade">Privacidade</a><a href="mailto:pingo.ia.nik0lax@gmail.com?subject=Contato%20sobre%20o%20Pingo">Contato</a></nav></div><div class="footer-bottom"><span>© <span id="year">2026</span> Gabriel Nicolas Ramos da Silva. Todos os direitos reservados.</span><span>Feito com uma gotinha. Projetado para Windows.</span></div></div></footer>
   <script>
     (() => {
@@ -482,38 +626,30 @@
         navMap.forEach((a, id) => { const el = document.getElementById(id); if (el) activeObserver.observe(el); });
       }
 
-      // Hero example rotation. Display is illustrative, not a real assistant connection.
-      const heroExamples = [
-        ['Ei, Pingo, o que tenho para hoje?', 'Posso mostrar sua agenda e seus lembretes.'],
-        ['Ei, Pingo, toca minha playlist.', 'Vou abrir o Spotify para você. 🎵'],
-        ['Ei, Pingo, cria um timer de 10 minutos.', 'Timer de 10 minutos iniciado!'],
-        ['Ei, Pingo, abre o YouTube.', 'Tudo certo. Abrindo o YouTube.']
+      // Interactive presentation plays only genuine screen recordings.
+      const experienceScenes = [
+        ['spotify', 'Spotify em ação', 'Pingo buscando e acompanhando uma música no topo da tela.'],
+        ['conversa', 'Conversa e comandos', 'Histórico e opções do painel de conversa do Pingo.'],
+        ['rotinas', 'Rotinas personalizadas', 'Editor com frases de ativação e passos sequenciais.'],
+        ['personalizar', 'Seu Pingo, sua aparência', 'Cores, expressões e acessórios capturados durante a personalização.']
       ];
-      const heroPrompt = document.getElementById('heroPrompt');
-      const heroReply = document.getElementById('heroReply');
-      let heroIndex = 0;
-      if (!reduceMotion) window.setInterval(() => {
-        if (document.hidden) return;
-        heroIndex = (heroIndex + 1) % heroExamples.length;
-        heroPrompt.textContent = heroExamples[heroIndex][0];
-        heroReply.textContent = heroExamples[heroIndex][1];
-      }, 4500);
-
-      // Clickable conversation examples (no tracking or network calls).
-      const examples = [
-        ['Toca minha playlist no Spotify.', 'Vou abrir o Spotify e reproduzir sua música. 🎵'],
-        ['Me lembra da reunião às 15h.', 'Combinado! Vou te lembrar da reunião às 15h. 📅'],
-        ['Converte esse arquivo para PDF.', 'Recebi seu arquivo. Vou preparar a versão em PDF. 📄'],
-        ['Olha minha tela e explica isso.', 'Selecione a área da tela que você quer analisar. 👀']
-      ];
-      const exampleButtons = document.querySelectorAll('[data-example]');
-      const exampleQuestion = document.getElementById('exampleQuestion');
-      const exampleAnswer = document.getElementById('exampleAnswer');
-      exampleButtons.forEach(button => button.addEventListener('click', () => {
-        const index = Number(button.dataset.example);
-        exampleButtons.forEach(item => { const active = item === button; item.classList.toggle('active', active); item.setAttribute('aria-pressed', String(active)); });
-        exampleQuestion.textContent = examples[index][0];
-        exampleAnswer.textContent = examples[index][1];
+      const experienceVideo = document.getElementById('experienceRealVideo');
+      const experienceButtons = [...document.querySelectorAll('[data-example]')];
+      const experienceExpand = document.getElementById('experienceExpand');
+      let activeExperience = 'spotify';
+      experienceButtons.forEach(button => button.addEventListener('click', () => {
+        const [file, title, description] = experienceScenes[Number(button.dataset.example)];
+        activeExperience = file;
+        experienceButtons.forEach(item => { const active = item === button; item.classList.toggle('active',active); item.setAttribute('aria-pressed', String(active)); });
+        document.getElementById('experienceTitle').textContent = title;
+        document.getElementById('experienceDesc').textContent = description;
+        experienceExpand.setAttribute('aria-label', `Abrir demonstração: ${title}`);
+        experienceVideo.pause();
+        experienceVideo.src = `demos/${file}.mp4`;
+        experienceVideo.poster = `demos/${file}-poster.jpg`;
+        experienceVideo.setAttribute('aria-label',`Gravação real do Pingo: ${title}`);
+        experienceVideo.load();
+        if (!reduceMotion) experienceVideo.play().catch(()=>{});
       }));
 
       // Video controls and viewport playback (reduces CPU use offscreen).
@@ -542,6 +678,83 @@
         }), { threshold: .1 });
         videos.forEach(video => videoObserver.observe(video));
       }
+
+      // Real-screen footage gallery: source-only MP4, no external services.
+      const galleryTiles = [...document.querySelectorAll('.real-tile')];
+      experienceExpand.addEventListener('click', () => {
+        const selected = galleryTiles.findIndex(tile => tile.dataset.clip === `demos/${activeExperience}.mp4`);
+        if (selected >= 0) openDemo(selected);
+      });
+      if (reduceMotion) {experienceVideo.autoplay = false;experienceVideo.pause();}
+      else if ('IntersectionObserver' in window) {
+        const experienceObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+          if (!entry.isIntersecting || dialog.open || document.hidden) experienceVideo.pause();
+          else experienceVideo.play().catch(()=>{});
+        }), {threshold:.08});
+        experienceObserver.observe(experienceVideo);
+      }
+
+      const galleryFilters = [...document.querySelectorAll('[data-gallery-filter]')];
+      galleryFilters.forEach(filter => filter.addEventListener('click', () => {
+        const category = filter.dataset.galleryFilter;
+        galleryFilters.forEach(item => { const selected = item === filter; item.classList.toggle('is-selected', selected); item.setAttribute('aria-pressed', String(selected)); });
+        galleryTiles.forEach(tile => { tile.hidden = category !== 'all' && !tile.dataset.tags.split(' ').includes(category); });
+      }));
+      const dialog = document.getElementById('videoDialog');
+      const dialogPlayer = document.getElementById('videoDialogPlayer');
+      const dialogTitle = document.getElementById('videoDialogTitle');
+      const dialogTime = document.getElementById('videoDialogTime');
+      let activeVideoIndex = 0;
+      function openDemo(index) {
+        const tile = galleryTiles[(index + galleryTiles.length) % galleryTiles.length];
+        if (!tile) return;
+        activeVideoIndex = galleryTiles.indexOf(tile);
+        dialogTitle.textContent = tile.dataset.title;
+        dialogTime.textContent = tile.dataset.timestamp;
+        dialogPlayer.pause();
+        dialogPlayer.poster = tile.dataset.poster;
+        dialogPlayer.src = tile.dataset.clip;
+        dialogPlayer.load();
+        if (!dialog.open) dialog.showModal();
+        dialogPlayer.play().catch(() => {});
+      }
+      galleryTiles.forEach((tile,index) => tile.addEventListener('click', () => openDemo(index)));
+      document.getElementById('videoDialogClose').addEventListener('click', () => dialog.close());
+      dialog.querySelector('.dialog-prev').addEventListener('click', () => openDemo(activeVideoIndex - 1));
+      dialog.querySelector('.dialog-next').addEventListener('click', () => openDemo(activeVideoIndex + 1));
+      dialog.addEventListener('click', ev => { if (ev.target === dialog) dialog.close(); });
+      dialog.addEventListener('close', () => { dialogPlayer.pause(); dialogPlayer.removeAttribute('src'); dialogPlayer.load(); });
+
+      // Hero uses the same genuine screencaptures; user can choose the scene.
+      const heroVideo = document.getElementById('heroRealVideo');
+      const heroScenes = [...document.querySelectorAll('[data-hero-scene]')];
+      let selectedHeroScene = 'personalizar';
+      const heroExpand = document.getElementById('heroExpand');
+      heroScenes.forEach(button => button.addEventListener('click', () => {
+        selectedHeroScene = button.dataset.heroScene;
+        heroScenes.forEach(item => {const selected = item === button;item.classList.toggle('is-active',selected);item.setAttribute('aria-pressed', String(selected)); });
+        heroVideo.pause();
+        heroVideo.src = `demos/${selectedHeroScene}.mp4`;
+        heroVideo.poster = `demos/${selectedHeroScene}-poster.jpg`;
+        heroVideo.load();
+        heroVideo.setAttribute('aria-label', `Gravação real do Pingo: ${button.dataset.heroLabel}`);
+        heroExpand.setAttribute('aria-label', `Ampliar vídeo: ${button.dataset.heroLabel}`);
+        if (!reduceMotion) heroVideo.play().catch(() => {});
+      }));
+      heroExpand.addEventListener('click', () => {
+        const index = galleryTiles.findIndex(tile => tile.dataset.clip === `demos/${selectedHeroScene}.mp4`);
+        if (index >= 0) openDemo(index);
+      });
+      if (reduceMotion) {heroVideo.autoplay = false;heroVideo.pause();}
+      else if ('IntersectionObserver' in window) {
+        const heroObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+          if (!entry.isIntersecting || dialog.open || document.hidden) heroVideo.pause();
+          else heroVideo.play().catch(() => {});
+        }), {threshold:.08});
+        heroObserver.observe(heroVideo);
+      }
+      dialog.addEventListener('close', () => {if (!reduceMotion && heroVideo.getBoundingClientRect().bottom > 0 && heroVideo.getBoundingClientRect().top < window.innerHeight) heroVideo.play().catch(() => {}); if (!reduceMotion && experienceVideo.getBoundingClientRect().bottom > 0 && experienceVideo.getBoundingClientRect().top < window.innerHeight) experienceVideo.play().catch(()=>{});});
+      document.addEventListener('visibilitychange', () => {if (document.hidden) {heroVideo.pause();experienceVideo.pause();dialogPlayer.pause();} else if (dialog.open) dialogPlayer.play().catch(()=>{});});
 
       // Pointer spotlight: desktop only, and disabled for reduced motion.
       if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
