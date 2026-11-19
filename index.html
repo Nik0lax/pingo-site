@@ -1,382 +1,566 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pingo — o assistente que mora no topo da sua tela</title>
-<meta name="description" content="O Pingo vive num entalho no topo da tela do seu PC: toca músicas, cuida de lembretes e agenda, responde o WhatsApp e muito mais. Tudo no seu computador, sem nuvem. Em fase de piloto.">
-<meta property="og:title" content="Pingo — o assistente que mora no topo da sua tela">
-<meta property="og:description" content="Voz, lembretes, música, WhatsApp e IA — tudo no seu PC, de forma privada. Peça acesso ao piloto.">
-<meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 6C24 18 14 28 14 40a18 18 0 0 0 36 0C50 28 40 18 32 6z' fill='%235AD8FF'/%3E%3Ccircle cx='25' cy='40' r='3' fill='%230B0C10'/%3E%3Ccircle cx='39' cy='40' r='3' fill='%230B0C10'/%3E%3C/svg%3E">
-<style>
-  :root{
-    --bg:#0B0C10; --bg2:#0E1017; --card:#13151D; --card2:#1A1D27; --line:#262A36;
-    --ink:#EEF1FA; --mist:#9AA3BC; --accent:#5AD8FF; --accent2:#7CE0C0; --ok:#4ADE80;
-    --radius:18px; --max:1080px;
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Segoe UI",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
-  a{color:inherit;text-decoration:none}
-  img,svg{max-width:100%}
-  .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
-  h1,h2,h3{line-height:1.15;letter-spacing:-.02em;margin:0}
-  h1{font-size:clamp(32px,6vw,56px);font-weight:800}
-  h2{font-size:clamp(26px,4.2vw,38px);font-weight:800}
-  .sub{color:var(--mist);font-size:clamp(16px,2.4vw,19px)}
-  .accent{color:var(--accent)}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:999px;font-weight:700;font-size:15px;border:1px solid transparent;cursor:pointer;transition:transform .12s,background .2s,border-color .2s}
-  .btn:hover{transform:translateY(-1px)}
-  .btn.primary{background:var(--accent);color:#062430}
-  .btn.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
-  .btn.ghost:hover{border-color:var(--accent)}
-  .pill{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;background:var(--card2);border:1px solid var(--line);font-size:14px;color:var(--ink)}
-
-  /* nav */
-  header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-  .nav .wrap{display:flex;align-items:center;gap:16px;height:64px}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
-  .brand .drop{width:28px;height:28px}
-  .nav nav{margin-left:auto;display:flex;align-items:center;gap:22px}
-  .nav nav a{color:var(--mist);font-size:14.5px;font-weight:600}
-  .nav nav a:hover{color:var(--ink)}
-  .nav .btn{padding:9px 18px}
-  .menu-links{display:flex;align-items:center;gap:22px}
-  @media(max-width:760px){.menu-links{display:none}}
-
-  /* hero */
-  .hero{position:relative;overflow:hidden;padding:72px 0 40px;text-align:center}
-  .hero:before{content:"";position:absolute;inset:-40% 0 auto 0;height:620px;background:radial-gradient(60% 60% at 50% 0,color-mix(in srgb,var(--accent) 20%,transparent),transparent 70%);pointer-events:none}
-  .hero .wrap{position:relative}
-  .hero h1{max-width:760px;margin:0 auto}
-  .hero p.sub{max-width:620px;margin:18px auto 0}
-  .hero .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
-  .hero .note{margin-top:14px;color:var(--mist);font-size:13.5px}
-
-  /* notch mock */
-  .notch{max-width:560px;margin:46px auto 0;background:linear-gradient(180deg,#15171F,#0F1118);border:1px solid var(--line);border-radius:0 0 26px 26px;border-top:none;box-shadow:0 30px 60px -30px #000, inset 0 1px 0 #ffffff14;padding:14px 20px;display:flex;align-items:center;gap:14px;text-align:left}
-  .notch .drop{width:40px;height:40px;flex-shrink:0}
-  .notch .nbody b{display:block;font-size:14px}
-  .notch .nbody small{color:var(--mist);font-size:12.5px}
-  .notch .dot{margin-left:auto;width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
-  .listening{display:inline-flex;gap:3px;align-items:flex-end;height:16px;margin-left:auto}
-  .listening i{width:3px;background:var(--accent);border-radius:2px;animation:eq 1s ease-in-out infinite}
-  .listening i:nth-child(2){animation-delay:.15s}.listening i:nth-child(3){animation-delay:.3s}.listening i:nth-child(4){animation-delay:.45s}
-  @keyframes eq{0%,100%{height:4px}50%{height:16px}}
-
-  /* commands */
-  .commands{padding:54px 0}
-  .commands h2{text-align:center}
-  .commands .sub{text-align:center;max-width:560px;margin:12px auto 0}
-  .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px}
-  .chips .pill{background:var(--card);font-size:14.5px;color:var(--mist)}
-  .chips .pill b{color:var(--ink);font-weight:600}
-
-  /* sections */
-  section{padding:56px 0}
-  .shead{text-align:center;max-width:620px;margin:0 auto 36px}
-  .shead .sub{margin-top:12px}
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-  @media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:560px){.grid{grid-template-columns:1fr}}
-  .feat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
-  .feat .ic{font-size:26px}
-  .feat h3{font-size:17px;margin:12px 0 6px}
-  .feat p{margin:0;color:var(--mist);font-size:14.5px}
-
-  /* highlights */
-  .hi{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:30px;margin-top:20px}
-  .hi.rev .vis{order:2}
-  @media(max-width:760px){.hi{grid-template-columns:1fr}.hi.rev .vis{order:0}}
-  .hi h3{font-size:22px}
-  .hi p{color:var(--mist);margin:10px 0 0}
-  .hi ul{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:8px}
-  .hi li{display:flex;gap:9px;align-items:flex-start;color:var(--ink);font-size:14.5px}
-  .hi li:before{content:"✓";color:var(--accent);font-weight:800}
-  .vis{background:linear-gradient(160deg,#171A24,#0F1117);border:1px solid var(--line);border-radius:18px;min-height:190px;padding:18px;display:flex;flex-direction:column;gap:10px;justify-content:center}
-  .bubble{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:11px 14px;font-size:14px}
-  .bubble.me{align-self:flex-end;background:color-mix(in srgb,var(--accent) 18%,var(--card2));border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
-  .bubble small{color:var(--mist);display:block;font-size:11.5px;margin-bottom:2px}
-
-  /* privacy */
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
-  @media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
-  .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;text-align:center}
-  .stat b{display:block;font-size:30px;font-weight:800;color:var(--accent)}
-  .stat span{color:var(--mist);font-size:13.5px}
-  .privbullets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:620px){.privbullets{grid-template-columns:1fr}}
-  .privbullets div{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:14.5px}
-  .privbullets div:before{content:"🔒";font-size:16px}
-
-  /* steps */
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-  @media(max-width:760px){.steps{grid-template-columns:1fr 1fr}}
-  @media(max-width:460px){.steps{grid-template-columns:1fr}}
-  .step{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
-  .step b.n{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#062430;font-weight:800;margin-bottom:10px}
-  .step h3{font-size:16px}
-  .step p{color:var(--mist);font-size:14px;margin:6px 0 0}
-
-  /* pilot */
-  .piloto{background:linear-gradient(180deg,var(--bg),var(--bg2))}
-  .pilotbox{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:34px;max-width:720px;margin:0 auto}
-  .pilotbox form{display:grid;gap:14px;margin-top:22px}
-  .pilotbox label{font-size:13.5px;color:var(--mist);display:block;margin-bottom:6px;font-weight:600}
-  .pilotbox input,.pilotbox textarea{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:15px;outline:none}
-  .pilotbox input:focus,.pilotbox textarea:focus{border-color:var(--accent)}
-  .pilotbox textarea{resize:vertical;min-height:90px}
-  .pilotbox .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  @media(max-width:560px){.pilotbox .row2{grid-template-columns:1fr}}
-  .pilotbox .ok{display:none;background:color-mix(in srgb,var(--ok) 14%,var(--card2));border:1px solid color-mix(in srgb,var(--ok) 40%,transparent);color:var(--ink);border-radius:12px;padding:14px;margin-top:16px}
-  .pilotbox .alt{color:var(--mist);font-size:13px;margin-top:14px;text-align:center}
-  .pilotbox .alt a{color:var(--accent)}
-
-  /* vídeos reais do Pingo (gravações da tela) */
-  .vidbox{background:linear-gradient(160deg,#171A24,#0F1117);border:1px solid var(--line);border-radius:18px;min-height:190px;display:flex;align-items:center;justify-content:center;padding:18px;overflow:hidden}
-  .vidbox video{width:100%;max-width:100%;border-radius:12px;display:block;box-shadow:0 14px 34px -16px #000}
-
-  /* demonstrações animadas (reserva, caso queira voltar) — rodam sozinhas em repetição */
-  .demo{position:relative;background:linear-gradient(160deg,#171A24,#0F1117);border:1px solid var(--line);border-radius:18px;min-height:220px;padding:18px;overflow:hidden;display:flex;flex-direction:column;gap:10px;justify-content:center}
-  .demo .tag{position:absolute;top:12px;right:14px;font-size:11px;color:var(--mist);background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:3px 9px}
-  .demo .bubble{opacity:0}
-  /* WhatsApp: mensagem chega → gravando áudio → enviado */
-  .demo-wa .b-in{animation:waIn 8s ease-in-out infinite}
-  .demo-wa .rec{display:flex;align-items:center;gap:10px;align-self:flex-start;background:var(--card2);border:1px solid color-mix(in srgb,#FF5A5F 35%,var(--line));border-radius:14px;padding:10px 14px;opacity:0;animation:waRec 8s ease-in-out infinite}
-  .demo-wa .rec .rdot{width:9px;height:9px;border-radius:50%;background:#FF5A5F;animation:blink 1s steps(2) infinite}
-  .demo-wa .rec .eq{display:inline-flex;gap:3px;align-items:center;height:16px}
-  .demo-wa .rec .eq i{width:3px;background:#FF8A8A;border-radius:2px;animation:eq 1s ease-in-out infinite}
-  .demo-wa .rec .eq i:nth-child(2){animation-delay:.12s}.demo-wa .rec .eq i:nth-child(3){animation-delay:.24s}.demo-wa .rec .eq i:nth-child(4){animation-delay:.36s}.demo-wa .rec .eq i:nth-child(5){animation-delay:.48s}
-  .demo-wa .rec b{font-size:13px}
-  .demo-wa .b-sent{animation:waSent 8s ease-in-out infinite}
-  @keyframes waIn{0%,3%{opacity:0;transform:translateY(8px)}7%,92%{opacity:1;transform:none}97%,100%{opacity:0}}
-  @keyframes waRec{0%,24%{opacity:0;transform:translateY(6px)}28%,56%{opacity:1;transform:none}61%,100%{opacity:0}}
-  @keyframes waSent{0%,61%{opacity:0;transform:translateY(8px)}66%,92%{opacity:1;transform:none}97%,100%{opacity:0}}
-  @keyframes blink{50%{opacity:.25}}
-  /* Olhar a tela: recorte desenha → analisando → resposta */
-  .demo-screen .scr{position:relative;background:#0C0E14;border:1px solid var(--line);border-radius:12px;height:120px;padding:12px;overflow:hidden}
-  .demo-screen .scr .ln{height:7px;border-radius:4px;background:#232736;margin-bottom:8px}
-  .demo-screen .scr .ln:nth-child(1){width:70%}.demo-screen .scr .ln:nth-child(2){width:90%}.demo-screen .scr .ln:nth-child(3){width:55%}.demo-screen .scr .ln:nth-child(4){width:80%}
-  .demo-screen .sel{position:absolute;left:26px;top:30px;border:2px dashed var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:6px;width:0;height:0;opacity:0;animation:selDraw 8s ease-in-out infinite}
-  .demo-screen .look{align-self:flex-start;opacity:0;animation:lookPill 8s ease-in-out infinite}
-  .demo-screen .ans{animation:ansIn 8s ease-in-out infinite}
-  @keyframes selDraw{0%,8%{opacity:0;width:0;height:0}12%{opacity:1;width:14px;height:12px}26%,48%{opacity:1;width:150px;height:56px}53%,100%{opacity:0;width:150px;height:56px}}
-  @keyframes lookPill{0%,30%{opacity:0;transform:translateY(6px)}34%,56%{opacity:1;transform:none}61%,100%{opacity:0}}
-  @keyframes ansIn{0%,58%{opacity:0;transform:translateY(8px)}64%,93%{opacity:1;transform:none}98%,100%{opacity:0}}
-  @media(max-width:760px){.demo{min-height:200px}}
-  @media(prefers-reduced-motion:reduce){.demo *{animation:none!important}.demo .bubble,.demo .rec,.demo .look,.demo .ans,.demo .sel{opacity:1!important}.demo-wa .rec{display:none}.demo-screen .sel{width:150px;height:56px}}
-
-  footer{border-top:1px solid var(--line);padding:30px 0;color:var(--mist);font-size:13.5px}
-  footer .wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
-  footer .brand{color:var(--ink);font-size:16px}
-  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
-  .reveal.in{opacity:1;transform:none}
-  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}.listening i,.hero:before{animation:none}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b13">
+  <meta name="description" content="Conheça o Pingo: seu assistente inteligente para Windows. Controle o PC por voz, use o WhatsApp, analise sua tela e converta arquivos direto do topo da tela. Piloto gratuito encerrado.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pingo — seu PC ganhou um novo jeito de conversar">
+  <meta property="og:description" content="Um assistente, infinitas possibilidades. Conheça as funcionalidades do Pingo em demonstrações reais.">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:url" content="https://nik0lax.github.io/pingo-site/">
+  <meta name="color-scheme" content="dark">
+  <title>Pingo — Seu PC ganhou um novo jeito de conversar</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 6C24 18 14 28 14 40a18 18 0 0 0 36 0C50 28 40 18 32 6z' fill='%235AD8FF'/%3E%3Ccircle cx='25' cy='40' r='3' fill='%230B0C10'/%3E%3Ccircle cx='39' cy='40' r='3' fill='%230B0C10'/%3E%3C/svg%3E">
+  <script>document.documentElement.classList.add('js');</script>
+  <style>
+    :root {
+      --bg: #070b13;
+      --bg-soft: #0b101a;
+      --surface: #101723;
+      --surface-2: #141d2a;
+      --stroke: rgba(168, 198, 230, .13);
+      --text: #f4f8ff;
+      --muted: #9caec4;
+      --cyan: #62deff;
+      --green: #79eec9;
+      --blue: #6888ff;
+      --shadow: 0 30px 95px rgba(0, 0, 0, .36);
+      --content: 1160px;
+      --radius: 24px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 94px; }
+    body { min-width: 320px; margin: 0; color: var(--text); background: var(--bg); font: 16px/1.62 "Segoe UI", Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    body::before { content: ""; pointer-events: none; position: fixed; inset: 0; z-index: -1; background: radial-gradient(ellipse at 52% -12%, rgba(58, 129, 169, .16), transparent 45%), linear-gradient(180deg, #0a101a, #070b13 46%); }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 5px; }
+    ::selection { background: #337c93; color: white; }
+    .container { width: min(var(--content), calc(100% - 48px)); margin-inline: auto; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .section { padding: clamp(76px, 9vw, 132px) 0; position: relative; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--cyan); letter-spacing: .17em; font-weight: 800; font-size: 11px; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 20px; height: 1px; background: currentColor; }
+    .section-title { max-width: 750px; margin: 14px 0 18px; font-size: clamp(35px, 4.5vw, 58px); line-height: 1.13; letter-spacing: -.055em; font-weight: 760; }
+    .section-sub { max-width: 590px; margin: 0; color: var(--muted); font-size: clamp(15px, 1.5vw, 18px); }
+    .gradient-text { background: linear-gradient(105deg, #d0f9ff 5%, var(--cyan) 42%, var(--green) 100%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+    .btn { display: inline-flex; min-height: 49px; justify-content: center; align-items: center; gap: 12px; padding: 12px 22px; border-radius: 14px; border: 1px solid transparent; cursor: pointer; font-size: 14px; line-height: 1.3; font-weight: 760; white-space: nowrap; transition: transform .25s, border-color .25s, background .25s, box-shadow .25s; }
+    .btn:hover { transform: translateY(-3px); }
+    .btn-primary { color: #061b27; background: linear-gradient(120deg, #5bdcff, #8cf5db); box-shadow: 0 12px 36px rgba(55, 207, 235, .21); }
+    .btn-primary:hover { box-shadow: 0 17px 46px rgba(55, 207, 235, .30); }
+    .btn-secondary { background: rgba(255,255,255,.035); color: #e9f4ff; border-color: rgba(190,218,255,.19); }
+    .btn-secondary:hover { border-color: rgba(98,222,255,.65); background: rgba(98,222,255,.06); }
+    .arrow { font-size: 19px; line-height: 1; transition: transform .25s; }
+    .btn:hover .arrow { transform: translateX(4px); }
+    .glass { background: linear-gradient(155deg, rgba(24, 35, 50, .86), rgba(13, 20, 32, .86)); border: 1px solid var(--stroke); box-shadow: var(--shadow); }
+    .accent-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 14px rgba(121,238,201,.65); flex: none; }
+    .line-glow { height: 1px; background: linear-gradient(90deg, transparent, rgba(98, 222, 255, .35), transparent); }
+    /* Header and scroll tracking */
+    .site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 50; border-bottom: 1px solid rgba(173,211,238,.09); background: rgba(7, 11, 19, .73); -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); transition: background .25s, box-shadow .25s; }
+    .site-header.is-scrolled { background: rgba(8, 13, 22, .93); box-shadow: 0 10px 42px rgba(0,0,0,.14); }
+    .header-inner { display: flex; align-items: center; gap: 24px; height: 77px; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; font-size: 23px; font-weight: 840; letter-spacing: -.065em; }
+    .brand-mark { display: inline-grid; place-items: center; width: 39px; height: 39px; border: 1px solid rgba(98,222,255,.22); background: radial-gradient(circle at 40% 20%, rgba(90,216,255,.15), rgba(14,26,40,.3)); border-radius: 12px; color: var(--cyan); }
+    .brand-mark svg { width: 25px; height: 25px; }
+    .nav { margin-left: auto; display: flex; align-items: center; gap: 31px; }
+    .nav-link { color: #aebed0; font-size: 13px; font-weight: 700; transition: color .2s; }
+    .nav-link:hover, .nav-link.is-active { color: var(--cyan); }
+    .header-action { margin-left: 5px; min-height: 41px; border-radius: 11px; padding: 10px 15px; font-size: 12px; }
+    .menu-toggle { display: none; margin-left: auto; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--stroke); color: var(--text); background: var(--surface); cursor: pointer; }
+    .menu-toggle svg { width: 21px; height: 21px; }
+    .scroll-track { position: absolute; bottom: -1px; left: 0; height: 2px; width: 100%; pointer-events: none; }
+    .scroll-track span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), var(--cyan), var(--green)); box-shadow: 0 0 16px var(--cyan); }
+    /* Hero */
+    .hero { padding-top: 164px; padding-bottom: 82px; min-height: 770px; overflow: hidden; isolation: isolate; }
+    .hero::before { content:""; position: absolute; width: 750px; height: 750px; top: -300px; right: -190px; border-radius: 50%; background: radial-gradient(circle, rgba(40,115,189,.26), rgba(28,61,98,.09) 42%, transparent 70%); filter: blur(14px); z-index: -1; }
+    .hero::after { content:""; position: absolute; inset: 0; z-index: -2; opacity: .45; background-image: linear-gradient(rgba(131,174,207,.055) 1px, transparent 1px),linear-gradient(90deg,rgba(131,174,207,.055) 1px, transparent 1px); background-size: 76px 76px; -webkit-mask-image: linear-gradient(to bottom, black, transparent 83%); mask-image: linear-gradient(to bottom, black, transparent 83%); }
+    .hero-layout { display: grid; grid-template-columns: .98fr 1.02fr; align-items: center; gap: clamp(30px, 5vw, 70px); }
+    .hero-copy { position: relative; z-index: 2; }
+    .hero-pill { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(98,222,255,.23); background: rgba(98,222,255,.065); color: #c5f1ff; font-size: 11px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+    .hero-pill .accent-dot { animation: statusPulse 2.5s ease-in-out infinite; }
+    .hero h1 { margin: 24px 0 20px; font-size: clamp(48px, 5.9vw, 78px); font-weight: 800; letter-spacing: -.078em; line-height: 1.045; max-width: 660px; }
+    .hero-lead { max-width: 530px; font-size: clamp(16px,1.6vw,19px); line-height: 1.8; color: var(--muted); margin: 0; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .hero-details { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 32px; font-size: 12px; font-weight: 650; color: #93a7c0; }
+    .hero-details span { display: inline-flex; align-items: center; gap: 7px; }
+    .hero-details svg { width: 15px; height: 15px; color: var(--green); }
+    .visual-shell { position: relative; min-width: 0; perspective: 1400px; transform-style: preserve-3d; }
+    .visual-orbit { position: absolute; z-index: -1; border: 1px solid rgba(96,178,247,.15); border-radius: 50%; pointer-events: none; }
+    .visual-orbit.one { inset: -52px -40px; animation: orbitFloat 13s ease-in-out infinite; }
+    .visual-orbit.two { inset: -91px -84px; opacity: .5; animation: orbitFloat 18s ease-in-out infinite reverse; }
+    .desktop-card { position: relative; aspect-ratio: 1.12; min-height: 390px; border-radius: 23px; overflow: visible; background: linear-gradient(155deg, #182539, #0c1423 50%, #101a2b); border: 1px solid rgba(158,213,255,.24); box-shadow: 0 42px 120px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.07); transform: rotateY(-5deg) rotateX(3deg); transition: transform .65s cubic-bezier(.2,.8,.2,1); }
+    .desktop-card:hover { transform: rotateY(0) rotateX(0); }
+    .desktop-card::before { content:""; position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at 50% 5%,rgba(71,173,223,.14),transparent 53%); }
+    .desktop-top { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 19px; border-bottom: 1px solid rgba(179,210,242,.12); }
+    .window-dots { display: flex; gap: 7px; }
+    .window-dots span { width: 8px; height: 8px; border-radius: 50%; background: #465b71; }
+    .window-dots span:first-child { background: #ff7e7c; } .window-dots span:nth-child(2) { background: #f8c66b; } .window-dots span:nth-child(3) { background: #66d59f; }
+    .desktop-top > span { font-size: 10px; color: #8298af; letter-spacing: .08em; text-transform: uppercase; }
+    .desktop-content { padding: 64px 24px 24px; position: relative; display: grid; gap: 14px; }
+    .notch { position: absolute; top: 53px; left: 50%; transform: translateX(-50%); width: min(83%, 360px); min-height: 76px; padding: 15px 17px; display: flex; align-items: center; gap: 10px; background: linear-gradient(120deg, #0a1019, #121d29); border: 1px solid rgba(98,222,255,.26); border-top-color: rgba(98,222,255,.10); border-radius: 0 0 21px 21px; box-shadow: 0 22px 48px rgba(0,0,0,.35), 0 0 45px rgba(81,211,255,.08); z-index: 2; animation: notchBreath 5s ease-in-out infinite; }
+    .notch-icon { width: 32px; height: 32px; flex: none; display: grid; place-items: center; color: var(--cyan); border-radius: 11px; background: rgba(98,222,255,.09); }
+    .notch-icon svg { width: 23px; height: 23px; }
+    .notch-copy { flex: 1; min-width: 0; }
+    .notch-copy strong { display: block; font-size: 12px; line-height: 1.35; }
+    .notch-copy small { display: block; color: #8a9caf; font-size: 10px; margin-top: 4px; }
+    .sound-waves { display: flex; align-items: center; gap: 3px; height: 22px; }
+    .sound-waves i { display: block; width: 3px; height: 7px; background: var(--cyan); border-radius: 3px; animation: soundWave 1.2s ease-in-out infinite; }
+    .sound-waves i:nth-child(2) { animation-delay: -.75s; } .sound-waves i:nth-child(3) { animation-delay: -.32s; }.sound-waves i:nth-child(4) { animation-delay: -.95s; }.sound-waves i:nth-child(5) { animation-delay: -.55s; }
+    .message-preview { margin-top: 38px; border: 1px solid rgba(120,177,217,.15); background: linear-gradient(125deg,rgba(17,29,45,.92),rgba(8,15,26,.72)); border-radius: 16px; padding: 19px 20px; min-height: 113px; }
+    .message-label { display: flex; align-items: center; justify-content: space-between; color: #8fa7bf; font-size: 10px; font-weight: 730; letter-spacing: .09em; text-transform: uppercase; }
+    .message-label .accent-dot { width: 6px; height: 6px; }
+    .message-preview p { margin: 14px 0 0; font-weight: 700; font-size: clamp(13px, 1.45vw, 17px); line-height: 1.4; min-height: 26px; }
+    .message-preview .typing { display: inline-block; width: 2px; height: 16px; background: var(--cyan); vertical-align: -2px; margin-left: 2px; animation: cursorBlink .9s step-end infinite; }
+    .response-preview { display: flex; gap: 12px; align-items: flex-start; padding: 15px 16px; background: rgba(98,222,255,.06); border: 1px solid rgba(98,222,255,.16); border-radius: 15px; font-size: 12px; color: #d5e7f8; min-height: 87px; }
+    .response-preview > svg { color: var(--cyan); flex: none; margin-top: 2px; width: 20px; height: 20px; }
+    .response-preview b { display: block; font-size: 11px; color: var(--cyan); margin-bottom: 3px; }
+    .response-preview span { display: block; }
+    .desktop-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 2px; color: #7b94ae; font-size: 10px; }
+    .desktop-bottom .bottom-chip { border-radius: 8px; padding: 5px 9px; color: #b1e5f5; background: rgba(98,222,255,.07); }
+    .floating-card { position: absolute; z-index: 4; display: flex; gap: 11px; align-items: center; padding: 12px 15px; border: 1px solid rgba(152,202,237,.24); border-radius: 13px; background: rgba(18, 30, 43, .95); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 18px 55px rgba(0,0,0,.24); animation: float 6s ease-in-out infinite; }
+    .floating-card .floating-icon { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 10px; background: rgba(98,222,255,.10); color: var(--cyan); font-size: 16px; }
+    .floating-card strong { display: block; font-size: 11px; line-height: 1.25; }
+    .floating-card small { display: block; font-size: 9px; color: #98b0c4; white-space: nowrap; margin-top: 3px; }
+    .float-left { bottom: 70px; left: -62px; }
+    .float-right { top: 92px; right: -52px; animation-delay: -2.5s; }
+    .visual-caption { color: #778ca3; font-size: 10px; letter-spacing: .04em; text-align: center; margin-top: 18px; }
+    /* Product strip */
+    .trust-strip { position: relative; padding: 0 0 44px; }
+    .trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 24px 0; border-top: 1px solid var(--stroke); border-bottom: 1px solid var(--stroke); }
+    .trust-item { display: flex; justify-content: center; align-items: center; gap: 12px; color: #b9c9db; font-size: 13px; font-weight: 650; }
+    .trust-item svg { width: 20px; height: 20px; color: var(--cyan); flex: none; }
+    /* Overview features */
+    .features-section { padding-top: 98px; }
+    .center-heading { max-width: 760px; margin-inline: auto; text-align: center; }
+    .center-heading .section-sub { margin-inline: auto; }
+    .center-heading .eyebrow::before { display: none; }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; margin-top: 47px; }
+    .feature-card { position: relative; overflow: hidden; min-height: 240px; border-radius: 21px; padding: 27px; background: linear-gradient(155deg, rgba(21, 32, 48, .88), rgba(10, 17, 29, .96)); border: 1px solid var(--stroke); transition: transform .36s, border-color .36s, background .36s, box-shadow .36s; }
+    .feature-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(390px circle at var(--mx,50%) var(--my, 0%), rgba(98,222,255,.12), transparent 50%); opacity: 0; transition: opacity .35s; }
+    .feature-card:hover { transform: translateY(-7px); border-color: rgba(98,222,255,.32); box-shadow: 0 22px 52px rgba(0,0,0,.20); }
+    .feature-card:hover::after { opacity: 1; }
+    .feature-card.feature-large { grid-column: span 2; background: radial-gradient(circle at 88% 25%, rgba(43, 108, 161, .2), transparent 50%), linear-gradient(155deg,#142133,#0d1623); }
+    .feature-icon { position: relative; width: 50px; height: 50px; display: grid; place-items: center; color: var(--cyan); border: 1px solid rgba(98,222,255,.19); background: rgba(98,222,255,.075); border-radius: 15px; margin-bottom: 24px; }
+    .feature-icon svg { width: 24px; height: 24px; stroke-width: 1.8; }
+    .feature-card h3 { position: relative; z-index: 1; font-size: 19px; letter-spacing: -.03em; line-height: 1.3; margin: 0 0 10px; }
+    .feature-card p { position: relative; z-index: 1; max-width: 400px; color: var(--muted); font-size: 13px; line-height: 1.8; margin: 0; }
+    .feature-corner { position: absolute; right: 22px; top: 19px; color: rgba(174,217,243,.28); font-size: 11px; font-weight: 800; letter-spacing: .09em; }
+    .feature-large .feature-art { position: absolute; right: 37px; top: 58px; width: 170px; height: 116px; border: 1px solid rgba(98,222,255,.18); border-radius: 18px; background: rgba(9,18,29,.72); transform: rotate(-8deg); box-shadow: 20px 15px 0 rgba(98,222,255,.04); display: grid; place-items: center; color: var(--cyan); }
+    .feature-art .sound-waves { transform: scale(2.15); }
+    /* Interactive examples */
+    .commands-section { padding-top: 65px; }
+    .commands-panel { position: relative; overflow: hidden; border-radius: 28px; padding: clamp(30px, 5vw, 60px); background: radial-gradient(circle at 90% 0, rgba(48,122,159,.17), transparent 52%), linear-gradient(140deg,#101b2a,#0b121d); border: 1px solid rgba(152,202,237,.18); display: grid; grid-template-columns: .85fr 1.15fr; gap: 40px; align-items: center; }
+    .commands-panel::after { content:""; position:absolute; width: 330px; height:330px; right:-150px; bottom:-170px; border-radius:50%; border:1px solid rgba(98,222,255,.15); pointer-events:none; }
+    .commands-panel h2 { margin: 13px 0 12px; font-size: clamp(30px,3.5vw,47px); letter-spacing: -.055em; line-height: 1.18; }
+    .commands-panel p { color: var(--muted); font-size: 14px; }
+    .examples { display: grid; gap: 9px; margin-top: 22px; }
+    .example-button { appearance: none; width: 100%; display: flex; align-items: center; text-align: left; gap: 12px; background: rgba(255,255,255,.025); color: #b5c8da; border: 1px solid rgba(168,198,230,.13); border-radius: 12px; padding: 12px 14px; cursor: pointer; font-size: 13px; font-weight: 650; transition: all .24s; }
+    .example-button::before { content:"↗"; color: var(--cyan); font-size: 15px; }
+    .example-button:hover, .example-button.active { background: rgba(98,222,255,.085); color: #f3fbff; border-color: rgba(98,222,255,.35); transform: translateX(4px); }
+    .example-screen { position: relative; border: 1px solid rgba(164,214,239,.20); border-radius: 21px; background: #080f1a; padding: 20px; box-shadow: 0 25px 80px rgba(0,0,0,.24); }
+    .example-bar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; margin-bottom: 20px; border-bottom: 1px solid rgba(165,215,241,.10); font-size: 11px; font-weight: 750; color: #819cb5; }
+    .example-bar > span:first-child { display: flex; gap: 8px; align-items: center; }
+    .chat-row { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+    .chat-row.user { align-items: flex-end; }
+    .chat-row.bot { align-items: flex-start; }
+    .chat-who { font-size: 10px; color: #8197ac; font-weight: 650; }
+    .chat-bubble { max-width: 94%; border-radius: 15px 15px 15px 4px; background: #152538; border: 1px solid rgba(98,222,255,.18); color: #eef8ff; padding: 13px 15px; font-size: 14px; line-height: 1.55; min-height: 45px; }
+    .chat-row.user .chat-bubble { border-radius: 15px 15px 4px 15px; background: #192435; border-color: rgba(171,199,220,.16); }
+    .example-foot { display:flex; align-items:center; justify-content: space-between; gap: 10px; border-top: 1px solid rgba(165,215,241,.1); padding-top: 14px; margin-top: 21px; color: #71869f; font-size: 10px; }
+    /* Product video demos */
+    .demos-section { background: linear-gradient(180deg, transparent, #09111d 19%, #09111d 78%, transparent); }
+    .demo-stack { display: grid; gap: 28px; margin-top: 50px; }
+    .demo-row { display: grid; grid-template-columns: 1.02fr .98fr; gap: clamp(28px, 5vw, 66px); align-items: center; padding: 24px; background: linear-gradient(137deg, rgba(20,30,44,.76),rgba(8,14,24,.6)); border: 1px solid rgba(168,198,230,.11); border-radius: 28px; }
+    .demo-row:nth-child(even) .demo-text { order: -1; }
+    .demo-media { position: relative; min-width: 0; border-radius: 19px; background: radial-gradient(circle at 50% -20%, rgba(62,150,201,.22), transparent 65%), #080e18; border: 1px solid rgba(152,202,237,.14); overflow: hidden; padding-bottom: 15px; }
+    .demo-media::after { content:""; position:absolute; inset:0; pointer-events:none; box-shadow: inset 0 0 36px rgba(0,0,0,.15); border-radius:inherit; }
+    .video-toolbar { height: 47px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; background: rgba(16,26,40,.83); border-bottom: 1px solid rgba(154,195,222,.13); }
+    .video-toolbar .window-dots span { width: 7px; height: 7px; }
+    .video-toolbar strong { font-size: 10px; color: #9bb4c9; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+    .video-tag { padding: 3px 8px; background: rgba(98,222,255,.065); border: 1px solid rgba(98,222,255,.14); border-radius: 7px; color: #a6eaff; font-size: 9px; font-weight: 770; }
+    .video-stage { display: flex; align-items: center; justify-content: center; min-height: 210px; padding: 30px 20px 24px; }
+    .video-stage video { display: block; width: 100%; max-width: 640px; height: auto; border-radius: 9px; box-shadow: 0 20px 55px rgba(0,0,0,.34); background: #05070b; }
+    .video-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 17px; color: #7893ab; font-size: 10px; }
+    .video-control { appearance: none; cursor: pointer; position: relative; z-index: 2; display: inline-flex; align-items: center; justify-content: center; gap: 7px; background: rgba(98,222,255,.07); border: 1px solid rgba(98,222,255,.15); border-radius: 9px; min-height: 30px; padding: 5px 10px; color: #d6f4ff; font-size: 10px; font-weight: 750; }
+    .demo-text { padding: 10px 12px; }
+    .demo-kicker { font-size: 11px; color: var(--cyan); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .demo-text h3 { margin: 13px 0 15px; font-size: clamp(27px, 3vw, 39px); line-height: 1.18; letter-spacing: -.049em; }
+    .demo-text p { color: var(--muted); font-size: 15px; margin: 0 0 20px; }
+    .demo-benefits { display: grid; gap: 11px; list-style: none; padding: 0; margin: 0; }
+    .demo-benefits li { display:flex;align-items:flex-start;gap: 10px; color: #c9d9e7; font-size: 13px; line-height: 1.6; }
+    .demo-benefits li::before { content:"✓"; color: var(--green); font-weight: 840; }
+    /* Workflow */
+    .how-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 47px; }
+    .how-card { position: relative; padding: 30px 27px; border: 1px solid var(--stroke); border-radius: 20px; background: rgba(17,27,40,.65); }
+    .how-number { display: inline-grid; place-items: center; width: 39px; height: 39px; border-radius: 12px; font-size: 14px; color: #071c2b; font-weight: 800; background: linear-gradient(140deg, var(--cyan), var(--green)); margin-bottom: 22px; }
+    .how-card h3 { margin: 0 0 10px; font-size: 20px; letter-spacing: -.035em; }
+    .how-card p { font-size: 13px; line-height: 1.8; color: var(--muted); margin: 0; }
+    .how-card:not(:last-child)::after { content:"→"; position:absolute; top: 50px; right: -23px; z-index: 2; font-size: 18px; color: var(--cyan); }
+    /* Privacy */
+    .privacy-section { padding-top: 72px; }
+    .privacy-layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: 70px; align-items: center; }
+    .privacy-points { display: grid; gap: 13px; }
+    .privacy-point { display: flex; gap: 16px; padding: 19px 20px; border: 1px solid var(--stroke); background: linear-gradient(120deg, rgba(20,33,48,.73), rgba(11,18,29,.7)); border-radius: 16px; }
+    .privacy-point-icon { display: grid; place-items: center; border-radius: 12px; width: 38px; height: 38px; background: rgba(98,222,255,.08); color: var(--cyan); flex: none; }
+    .privacy-point svg { width: 20px; height: 20px; }
+    .privacy-point h3 { margin: 0; font-size: 14px; }
+    .privacy-point p { font-size: 12px; color: var(--muted); margin: 3px 0 0; line-height: 1.7; }
+    .privacy-note { border-left: 2px solid rgba(98,222,255,.42); padding-left: 16px; font-size: 12px; color: #97acc0; margin-top: 27px; }
+    /* Pilot closed (replaces form) */
+    .availability-section { padding-top: 76px; padding-bottom: 115px; }
+    .availability-panel { position: relative; overflow: hidden; padding: clamp(35px, 7vw, 80px) 24px; text-align: center; border-radius: 32px; background: radial-gradient(ellipse at 50% -50%, rgba(98,222,255,.28),transparent 70%),linear-gradient(145deg,#111c2d,#0d1421); border: 1px solid rgba(118,196,233,.23); box-shadow: 0 32px 110px rgba(0,0,0,.24); }
+    .availability-panel::before, .availability-panel::after { content:""; position:absolute; pointer-events:none; border-radius:50%;border:1px solid rgba(98,222,255,.09);width:480px;height:480px;left:50%;top:-380px;transform:translateX(-50%); }
+    .availability-panel::after { width: 680px; height: 680px; top: -460px; }
+    .availability-panel > * { position: relative; z-index: 1; }
+    .availability-badge { display: inline-flex; align-items: center; gap: 9px; padding: 9px 15px; border-radius: 999px; border: 1px solid rgba(246,194,109,.24); background: rgba(246,194,109,.085); color: #f0cd90; font-weight: 790; font-size: 11px; letter-spacing: .055em; text-transform: uppercase; }
+    .availability-badge::before { content:""; width: 7px; height: 7px; border-radius: 50%; background: #f3c27a; }
+    .availability-panel h2 { max-width: 740px; margin: 21px auto 16px; font-size: clamp(35px, 5vw, 59px); letter-spacing: -.06em; line-height: 1.12; }
+    .availability-panel p { max-width: 610px; margin: 0 auto; color: #aec1d2; font-size: 15px; line-height: 1.85; }
+    .availability-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 30px; }
+    .availability-small { margin-top: 19px !important; font-size: 12px !important; color: #7f95aa !important; }
+    /* Footer */
+    .site-footer { border-top: 1px solid var(--stroke); background: #080d15; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 33px 0; }
+    .footer-brand .brand { font-size: 19px; }
+    .footer-caption { margin-top: 7px; font-size: 11px; color: #71859a; }
+    .footer-links { display: flex; gap: 25px; flex-wrap: wrap; }
+    .footer-links a { color: #9bafc2; font-size: 12px; transition: color .2s; }
+    .footer-links a:hover { color: var(--cyan); }
+    .footer-bottom { border-top: 1px solid rgba(174,198,224,.08); padding: 18px 0 25px; display: flex; justify-content: space-between; gap: 16px; color: #73889b; font-size: 11px; }
+    /* Scroll and mouse movement */
+    .js .reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1); }
+    .js .reveal.is-visible { opacity: 1; transform: translateY(0); }
+    .js .reveal.delay-1 { transition-delay: .10s; }.js .reveal.delay-2 { transition-delay: .20s; }.js .reveal.delay-3 { transition-delay: .30s; }
+    .page-pointer-glow { position: fixed; width: 440px; height: 440px; border-radius: 50%; pointer-events: none; z-index: 0; opacity: 0; transform: translate(-50%,-50%); background: radial-gradient(circle,rgba(91,181,224,.06), transparent 60%); transition: opacity .35s; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-13px); } }
+    @keyframes soundWave { 0%,100% { height: 5px; opacity: .6; } 50% { height: 22px; opacity: 1; } }
+    @keyframes orbitFloat { 0%,100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.035) rotate(2deg); } }
+    @keyframes statusPulse { 0%,100% { box-shadow: 0 0 8px rgba(121,238,201,.5); } 50% { box-shadow: 0 0 19px rgba(121,238,201,1); } }
+    @keyframes notchBreath { 0%,100% { box-shadow: 0 22px 48px rgba(0,0,0,.35), 0 0 30px rgba(81,211,255,.07); } 50% { box-shadow: 0 22px 48px rgba(0,0,0,.35), 0 0 45px rgba(81,211,255,.22); } }
+    @keyframes cursorBlink { 50% { opacity: 0; } }
+    @media (min-width: 1025px) { .site-header .header-inner { gap: 18px; } }
+    @media (max-width: 1080px) {
+      .float-left { left: -22px; bottom: 30px; } .float-right { right: -15px; top: 95px; }
+      .hero-layout { gap: 30px; } .hero h1 { font-size: clamp(46px,5.65vw,66px); }
+      .feature-large .feature-art { right: 17px; width: 120px; }
+    }
+    @media (max-width: 850px) {
+      .hero { padding-top: 135px; min-height: unset; }
+      .hero-layout { grid-template-columns: 1fr; gap: 78px; text-align: center; }
+      .hero-copy { display: flex; flex-direction: column; align-items: center; }
+      .hero-lead { max-width: 660px; } .hero h1 { max-width: 730px; font-size: clamp(48px,9vw,76px); }
+      .hero-actions { justify-content: center; } .hero-details { justify-content: center; }
+      .visual-shell { max-width: 550px; width: min(100% - 32px,550px); margin-inline: auto; }
+      .desktop-card { transform: none; } .desktop-card:hover { transform: none; }
+      .commands-panel { gap: 24px; } .demo-row { gap: 22px; }
+      .privacy-layout { gap: 30px; }
+      .feature-large .feature-art { display: none; }
+    }
+    @media (max-width: 720px) {
+      .container { width: min(var(--content),calc(100% - 36px)); }
+      .header-inner { height: 69px; } .site-header .brand { font-size: 21px; }
+      .menu-toggle { display: inline-flex; }
+      .nav { position: absolute; top: 69px; left: 0; right: 0; display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 11px 18px 18px; margin: 0; background: rgba(8,14,24,.98); border-bottom: 1px solid var(--stroke); box-shadow: 0 30px 48px rgba(0,0,0,.24); visibility: hidden; opacity: 0; pointer-events: none; transform: translateY(-8px); transition: opacity .2s, transform .2s, visibility .2s; }
+      .nav.is-open { visibility: visible; opacity: 1; pointer-events: auto; transform: translateY(0); }
+      .nav-link { padding: 12px 13px; font-size: 14px; }
+      .header-action { margin: 11px 0 0; }
+      .hero { padding-top: 120px; } .hero-layout { gap: 64px; }
+      .hero h1 { font-size: clamp(43px,10.7vw,67px); }
+      .desktop-card { min-height: 370px; }
+      .trust-grid { grid-template-columns: 1fr; gap: 22px; padding: 27px 0; }
+      .trust-item { justify-content: flex-start; padding-left: 12px; }
+      .feature-grid { grid-template-columns: 1fr 1fr; }
+      .feature-card.feature-large { grid-column: span 2; }
+      .feature-card { min-height: 230px; padding: 22px; }
+      .commands-panel { grid-template-columns: 1fr; }
+      .demo-row { grid-template-columns: 1fr; padding: 18px; }
+      .demo-row:nth-child(even) .demo-text { order: 0; }
+      .demo-text { padding: 14px 7px 5px; }
+      .privacy-layout { grid-template-columns: 1fr; }
+      .how-grid { grid-template-columns: 1fr; }
+      .how-card:not(:last-child)::after { display: none; }
+      .footer-inner { flex-wrap: wrap; }
+    }
+    @media (max-width: 500px) {
+      .section { padding: 76px 0; }
+      .hero { padding-top: 118px; padding-bottom: 56px; }
+      .hero h1 { font-size: clamp(43px, 12vw, 57px); }
+      .hero-lead { font-size: 15px; }
+      .hero-actions { width: 100%; flex-direction: column; }
+      .hero-actions .btn { width: 100%; }
+      .hero-details { gap: 9px 15px; font-size: 11px; }
+      .visual-shell { width: min(100% - 4px, 450px); }
+      .desktop-card { aspect-ratio: auto; min-height: 370px; }
+      .desktop-content { padding: 60px 12px 16px; }
+      .notch { width: 90%; }
+      .message-preview { padding: 17px 14px; } .response-preview { padding: 13px; }
+      .float-left, .float-right { display: none; }
+      .feature-grid { grid-template-columns: 1fr; gap: 12px; }
+      .feature-card.feature-large { grid-column: span 1; }
+      .feature-card { min-height: 190px; }
+      .feature-icon { margin-bottom: 15px; }
+      .commands-panel { padding: 24px 17px; }
+      .example-screen { padding: 14px; }
+      .video-stage { min-height: 140px; padding: 30px 10px 24px; }
+      .video-foot { flex-direction: column; align-items: flex-start; }
+      .footer-bottom { flex-direction: column; }
+      .availability-panel { padding: 42px 19px; }
+      .availability-actions { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .js .reveal { opacity: 1; transform: none; }
+      .hero-pill .accent-dot { box-shadow: none; }
+    }
+  </style>
 </head>
 <body>
-
-<svg width="0" height="0" style="position:absolute"><symbol id="drop" viewBox="0 0 64 64"><path d="M32 6C24 18 14 28 14 40a18 18 0 0 0 36 0C50 28 40 18 32 6z" fill="currentColor"/><circle cx="25" cy="40" r="3" fill="#0B0C10"/><circle cx="39" cy="40" r="3" fill="#0B0C10"/></symbol></svg>
-
-<header class="nav">
-  <div class="wrap">
-    <a class="brand" href="#top"><svg class="drop" style="color:var(--accent)"><use href="#drop"/></svg> Pingo</a>
-    <nav>
-      <span class="menu-links">
-        <a href="#funcoes">Funções</a>
-        <a href="#privacidade">Privacidade</a>
-        <a href="#como">Como funciona</a>
-      </span>
-      <a class="btn primary" href="#piloto">Quero o piloto</a>
-    </nav>
-  </div>
-</header>
-
-<main id="top">
-
-  <section class="hero">
-    <div class="wrap">
-      <span class="pill" style="margin-bottom:18px">💧 Em fase de piloto · para Windows</span>
-      <h1>O assistente que mora no <span class="accent">topo da sua tela</span>.</h1>
-      <p class="sub">O Pingo vive num entalho no alto do seu PC. Fale ou digite, e ele toca suas músicas, cuida dos lembretes e da agenda, responde o WhatsApp sem você sair do que está fazendo e muito mais. Tudo no seu computador.</p>
-      <div class="cta">
-        <a class="btn primary" href="#piloto">Solicitar o piloto</a>
-        <a class="btn ghost" href="#funcoes">Ver as funções</a>
-      </div>
-      <p class="note">Roda em PC comum, sem placa de vídeo · voz no próprio PC · sem nuvem e sem telemetria</p>
-
-      <div class="notch">
-        <svg class="drop" style="color:var(--accent)"><use href="#drop"/></svg>
-        <div class="nbody"><b>Tocando "Evidências" no Spotify 🎵</b><small>é só pedir — eu abro e toco para você</small></div>
-        <span class="listening" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-      </div>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden">
+    <symbol id="pingo-mark" viewBox="0 0 64 64"><path d="M32 5c-7.5 11.9-18.5 24-18.5 35.1a18.5 18.5 0 0 0 37 0C50.5 29 39.5 16.9 32 5Z" fill="currentColor"/><circle cx="25.3" cy="40.2" r="3" fill="#07101b"/><circle cx="39" cy="40.2" r="3" fill="#07101b"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4.1 4.1L19 6.2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5m-4 0h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-screen" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2" stroke="currentColor" fill="none" stroke-width="1.8"/><path d="M8 22h8m-4-4v4M6 9h5m-5 3h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 1-8 8c-1.1 0-2.1-.2-3-.5L4 20l1.5-4.4A8 8 0 1 1 20 11Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 11h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-files" viewBox="0 0 24 24"><path d="M8 3h7l4 4v13a1 1 0 0 1-1 1H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm7 0v5h4M4 9v11a2 2 0 0 0 2 2h9" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/><path d="m9 14 2 2 4-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 2v6m10-6v6M3 10h18m-13 5h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 8l12-2" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" fill="none"/><ellipse cx="6" cy="18" rx="3" ry="2.1" stroke="currentColor" fill="none" stroke-width="1.8"/><ellipse cx="18" cy="16" rx="3" ry="2.1" stroke="currentColor" fill="none" stroke-width="1.8"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 2 8 4v6c0 5-3.6 8.5-8 10-4.4-1.5-8-5-8-10V6l8-4Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m8.5 12 2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2 2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 1 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-lightning" viewBox="0 0 24 24"><path d="m13 2-9 11h7l-1 9 10-12h-7l0-8Z" stroke="currentColor" fill="none" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  </svg>
+  <div class="page-pointer-glow" id="pointerGlow" aria-hidden="true"></div>
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="#inicio" class="brand" aria-label="Pingo — início"><span class="brand-mark"><svg aria-hidden="true"><use href="#pingo-mark"/></svg></span><span>Pingo<span style="color:var(--cyan)">.</span></span></a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+      <nav class="nav" id="mainNav" aria-label="Navegação principal">
+        <a class="nav-link" href="#recursos">Recursos</a>
+        <a class="nav-link" href="#experimente">Experiência</a>
+        <a class="nav-link" href="#demos">Demonstrações</a>
+        <a class="nav-link" href="#privacidade">Privacidade</a>
+        <a class="btn btn-primary header-action" href="#disponibilidade">Status do piloto <span class="arrow" aria-hidden="true">↗</span></a>
+      </nav>
     </div>
-  </section>
-
-  <section class="commands reveal">
-    <div class="wrap">
-      <h2>Fale do seu <span class="accent">jeito</span>.</h2>
-      <p class="sub">O Pingo entende o português do dia a dia — e também pedidos em inglês ou misturados. Alguns ele resolve na hora, sem internet:</p>
-      <div class="chips">
-        <span class="pill"><b>Ei, Pingo, toca Henrique e Juliano</b></span>
-        <span class="pill"><b>timer de 10 minutos para a pizza</b></span>
-        <span class="pill"><b>me lembra de ligar pro cliente em 30 minutos</b></span>
-        <span class="pill"><b>o que eu tenho hoje?</b></span>
-        <span class="pill"><b>vai chover amanhã?</b></span>
-        <span class="pill"><b>manda um áudio pra Maria</b></span>
-        <span class="pill"><b>quanto é 15% de 230</b></span>
-        <span class="pill"><b>abre o YouTube</b></span>
-        <span class="pill"><b>olha minha tela e resolve isso</b></span>
-        <span class="pill"><b>como tá meu dia?</b></span>
-      </div>
-    </div>
-  </section>
-
-  <section id="funcoes">
-    <div class="wrap">
-      <div class="shead reveal">
-        <h2>Tudo num lugar <span class="accent">só</span>.</h2>
-        <p class="sub">Sem abrir mil janelas: o Pingo fica no topo e aparece quando você precisa.</p>
-      </div>
-      <div class="grid">
-        <div class="feat reveal"><div class="ic">🗣</div><h3>Voz que funciona offline</h3><p>Diga "Ei, Pingo" e ele acorda. O reconhecimento roda no seu PC, sem mandar a sua voz para a internet. Ele fala de volta com vozes naturais em português.</p></div>
-        <div class="feat reveal"><div class="ic">🎵</div><h3>Música no Spotify por voz</h3><p>"Toca Bad Romance" e ele abre o Spotify e toca a música certa, sem você procurar. Funciona até com a conta grátis.</p></div>
-        <div class="feat reveal"><div class="ic">📅</div><h3>Agenda, lembretes e timers</h3><p>Marque compromissos, crie lembretes com aviso antes da hora e timers com nome que correm ao lado do Pingo.</p></div>
-        <div class="feat reveal"><div class="ic">💬</div><h3>WhatsApp no entalho</h3><p>As mensagens aparecem no topo da tela, até no meio de um jogo, e você responde por texto ou áudio sem sair do que está fazendo. Áudios recebidos viram texto.</p></div>
-        <div class="feat reveal"><div class="ic">👁</div><h3>Olhar a tela</h3><p>Recorte um pedaço da tela e a IA responde: a resposta de um exercício, o que diz um texto em outra língua, a pista de um jogo.</p></div>
-        <div class="feat reveal"><div class="ic">🔄</div><h3>Converter arquivos</h3><p>Arraste um arquivo até o entalho: Word vira PDF, PDF vira Word e imagens trocam de formato, ali mesmo.</p></div>
-        <div class="feat reveal"><div class="ic">💧</div><h3>Hábitos e bem-estar</h3><p>Conte a água do dia, crie hábitos e receba lembretes de pausa. O Pingo acompanha com você.</p></div>
-        <div class="feat reveal"><div class="ic">🔁</div><h3>Rotinas suas</h3><p>Junte vários pedidos numa frase só, como "bom dia", para abrir sites, programas e tocar música de uma vez.</p></div>
-        <div class="feat reveal"><div class="ic">✨</div><h3>IA grátis, se você quiser</h3><p>Para perguntas livres, conecte uma IA grátis. É opcional: sem ela, o Pingo já faz um monte de coisa sozinho.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section style="padding-top:0">
-    <div class="wrap">
-      <div class="hi reveal">
-        <div class="txt">
-          <h3>👁 Olhar a tela</h3>
-          <p>Um atalho recorta a tela, manda para a IA que você escolheu e traz a resposta no entalho — em segundos.</p>
-          <ul><li>Resolve questões e enigmas de jogo</li><li>Traduz ou lê o texto da tela em voz alta</li><li>A imagem não é salva em lugar nenhum</li></ul>
-        </div>
-        <div class="vidbox">
-          <video src="demos/olhar.mp4" autoplay muted loop playsinline preload="auto" aria-label="Gravação do Pingo olhando a tela e respondendo"></video>
-        </div>
-      </div>
-      <div class="hi rev reveal">
-        <div class="vidbox">
-          <video src="demos/whatsapp.mp4" autoplay muted loop playsinline preload="auto" aria-label="Gravação do Pingo gravando um áudio de resposta no WhatsApp"></video>
-        </div>
-        <div class="txt">
-          <h3>💬 WhatsApp sem sair do jogo</h3>
-          <p>O Pingo lê os avisos do Windows e responde pelo próprio WhatsApp do computador. Dá para mandar texto ou gravar um áudio — com o som do PC no mudo enquanto grava.</p>
-          <ul><li>Aparece por cima de jogos em tela cheia</li><li>Responder por texto ou por áudio</li><li>Suas conversas ficam no seu PC</li></ul>
-        </div>
-      </div>
-      <div class="hi reveal">
-        <div class="txt">
-          <h3>🔄 Converter arquivos arrastando</h3>
-          <p>Arraste um arquivo até o entalho e o Pingo converte ali mesmo, sem você abrir programa nenhum. O arquivo novo fica na mesma pasta.</p>
-          <ul><li>Word vira PDF e PDF vira Word</li><li>Imagens trocam entre PNG e JPG</li><li>Mostra o passo a passo e abre o resultado</li></ul>
-        </div>
-        <div class="vidbox">
-          <video src="demos/converter.mp4" autoplay muted loop playsinline preload="auto" aria-label="Gravação do Pingo convertendo um arquivo Word em PDF"></video>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="privacidade" style="background:var(--bg2)">
-    <div class="wrap">
-      <div class="shead reveal">
-        <h2>Seu PC, suas <span class="accent">coisas</span>.</h2>
-        <p class="sub">O Pingo foi feito para ser privado: seus dados ficam no seu computador, e nada é guardado em servidores nossos.</p>
-      </div>
-      <div class="stats reveal">
-        <div class="stat"><b>0</b><span>contas para criar. É instalar e usar.</span></div>
-        <div class="stat"><b>0</b><span>telemetria. Nada do seu uso é enviado.</span></div>
-        <div class="stat"><b>100%</b><span>no seu PC: voz e dados locais.</span></div>
-        <div class="stat"><b>sem</b><span>placa de vídeo: roda em PC comum.</span></div>
-      </div>
-      <div class="privbullets reveal">
-        <div>Sua voz é reconhecida no próprio computador — o áudio não sai do PC.</div>
-        <div>Tarefas, lembretes, memórias e ajustes ficam num arquivo no seu PC.</div>
-        <div>A IA só recebe algo quando você conecta uma e faz um pedido.</div>
-        <div>O Pingo some sozinho em jogos e vídeos em tela cheia, e volta quando você chama.</div>
-        <div>As chaves das IAs ficam criptografadas no seu computador.</div>
-        <div>Ações que mexem no PC só acontecem com o seu "sim".</div>
-      </div>
-    </div>
-  </section>
-
-  <section id="como">
-    <div class="wrap">
-      <div class="shead reveal">
-        <h2>Começar leva <span class="accent">2 minutos</span>.</h2>
-        <p class="sub">No piloto, o link do instalador e a sua chave de acesso chegam no seu e-mail.</p>
-      </div>
-      <div class="steps">
-        <div class="step reveal"><b class="n">1</b><h3>Peça o piloto</h3><p>Preencha o formulário aqui embaixo. Eu te envio o link e a chave.</p></div>
-        <div class="step reveal"><b class="n">2</b><h3>Instale o Pingo</h3><p>Baixe, abra o instalador e clique em instalar. Leva pouco mais de um minuto.</p></div>
-        <div class="step reveal"><b class="n">3</b><h3>Ative e diga oi</h3><p>Cole a sua chave e siga as boas-vindas: nome, voz, microfone e pronto.</p></div>
-        <div class="step reveal"><b class="n">4</b><h3>Use do seu jeito</h3><p>Passe o mouse no topo, aperte o atalho ou diga "Ei, Pingo". Ele está no alto da tela.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="piloto" class="piloto">
-    <div class="wrap">
-      <div class="pilotbox reveal">
-        <div style="text-align:center">
-          <span class="pill" style="margin-bottom:14px">💧 Vagas limitadas no piloto</span>
-          <h2>Quero testar o <span class="accent">Pingo</span></h2>
-          <p class="sub" style="margin-top:12px">Deixe seus dados que eu entro em contato com o link do instalador e a sua chave de acesso. Sem custo durante o piloto.</p>
-        </div>
-        <form id="pilotoForm" novalidate>
-          <div class="row2">
-            <div><label for="nome">Seu nome</label><input id="nome" name="nome" type="text" placeholder="Como quer ser chamado" required></div>
-            <div><label for="email">Seu e-mail</label><input id="email" name="email" type="email" placeholder="voce@email.com" required></div>
+    <div class="scroll-track" aria-hidden="true"><span id="scrollProgress"></span></div>
+  </header>
+  <main id="inicio">
+    <section class="hero section" aria-labelledby="hero-title">
+      <div class="container hero-layout">
+        <div class="hero-copy">
+          <div class="hero-pill reveal"><span class="accent-dot"></span> Seu assistente para Windows</div>
+          <h1 id="hero-title" class="reveal delay-1">Seu PC ganhou<br>um novo jeito<br><span class="gradient-text">de conversar.</span></h1>
+          <p class="hero-lead reveal delay-2">Dê comandos por voz, organize sua rotina, responda mensagens e use inteligência artificial sem perder o foco. O Pingo fica onde você precisa: <strong style="color:var(--text);font-weight:650">no topo da sua tela.</strong></p>
+          <div class="hero-actions reveal delay-3">
+            <a href="#demos" class="btn btn-primary">Ver o Pingo em ação <span class="arrow" aria-hidden="true">↗</span></a>
+            <a href="#recursos" class="btn btn-secondary">Explorar recursos <span class="arrow" aria-hidden="true">↓</span></a>
           </div>
-          <div><label for="uso">Para que você pretende usar o Pingo? (opcional)</label><textarea id="uso" name="uso" placeholder="Ex.: estudo, trabalho, organização do dia a dia…"></textarea></div>
-          <button class="btn primary" type="submit" style="justify-content:center">Enviar meu pedido</button>
-        </form>
-        <div class="ok" id="pilotoOk">✓ Quase lá! Abri seu e-mail com o pedido pronto — é só tocar em enviar. Se não abrir, escreva para <a href="mailto:pingo.ia.nik0lax@gmail.com">pingo.ia.nik0lax@gmail.com</a>.</div>
-        <p class="alt">Prefere escrever direto? <a href="mailto:pingo.ia.nik0lax@gmail.com?subject=Quero%20testar%20o%20Pingo">pingo.ia.nik0lax@gmail.com</a></p>
+          <div class="hero-details reveal delay-3"><span><svg aria-hidden="true"><use href="#i-check"/></svg> Feito para Windows</span><span><svg aria-hidden="true"><use href="#i-check"/></svg> Comandos de voz locais</span><span><svg aria-hidden="true"><use href="#i-check"/></svg> IA opcional</span></div>
+        </div>
+        <div class="visual-shell reveal delay-2">
+          <div class="visual-orbit one" aria-hidden="true"></div><div class="visual-orbit two" aria-hidden="true"></div>
+          <div class="desktop-card" aria-label="Representação ilustrativa da experiência do Pingo no Windows">
+            <div class="desktop-top"><div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div><span>Área de trabalho · Windows</span></div>
+            <div class="notch"><div class="notch-icon"><svg aria-hidden="true"><use href="#pingo-mark"/></svg></div><div class="notch-copy"><strong>Pingo está com você</strong><small>Pronto para ouvir</small></div><div class="sound-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
+            <div class="desktop-content">
+              <div class="message-preview"><div class="message-label"><span>Seu comando</span><span class="accent-dot"></span></div><p><span id="heroPrompt">Ei, Pingo, o que tenho para hoje?</span><span class="typing" aria-hidden="true"></span></p></div>
+              <div class="response-preview"><svg aria-hidden="true"><use href="#i-spark"/></svg><div><b>RESPOSTA DO PINGO</b><span id="heroReply">Posso mostrar sua agenda e seus lembretes.</span></div></div>
+              <div class="desktop-bottom"><span>Assistente integrado à sua rotina</span><span class="bottom-chip">● Pronto para ajudar</span></div>
+            </div>
+          </div>
+          <div class="floating-card float-left" aria-hidden="true"><div class="floating-icon">◷</div><div><strong>Lembrete criado</strong><small>Reunião • 15:30</small></div></div>
+          <div class="floating-card float-right" aria-hidden="true"><div class="floating-icon">♫</div><div><strong>Música no controle</strong><small>Spotify por voz</small></div></div>
+          <p class="visual-caption">Prévia ilustrativa · Conheça as gravações reais logo abaixo</p>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+    <section class="trust-strip" aria-label="Destaques do Pingo">
+      <div class="container trust-grid reveal">
+        <div class="trust-item"><svg aria-hidden="true"><use href="#i-lightning"/></svg> Acesso rápido sem trocar de janela</div>
+        <div class="trust-item"><svg aria-hidden="true"><use href="#i-mic"/></svg> Voz processada no próprio PC</div>
+        <div class="trust-item"><svg aria-hidden="true"><use href="#i-shield"/></svg> Privacidade no centro da experiência</div>
+      </div>
+    </section>
+    <section class="section features-section" id="recursos" aria-labelledby="features-title">
+      <div class="container">
+        <div class="center-heading reveal"><span class="eyebrow">Um universo de possibilidades</span><h2 class="section-title" id="features-title">Mais do que um assistente.<br><span class="gradient-text">Uma nova experiência.</span></h2><p class="section-sub">O Pingo conecta pequenas tarefas do dia a dia a uma interface simples, rápida e sempre por perto.</p></div>
+        <div class="feature-grid">
+          <article class="feature-card feature-large reveal" data-spotlight><span class="feature-corner">01 / VOZ</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-mic"/></svg></div><h3>Fale naturalmente. Ele entende.</h3><p>Chame “Ei, Pingo” e use a voz para abrir programas, consultar informações, iniciar tarefas e muito mais. O reconhecimento da fala funciona localmente.</p><div class="feature-art" aria-hidden="true"><div class="sound-waves"><i></i><i></i><i></i><i></i><i></i></div></div></article>
+          <article class="feature-card reveal delay-1" data-spotlight><span class="feature-corner">02 / MENSAGENS</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-chat"/></svg></div><h3>WhatsApp sem interrupções</h3><p>Visualize mensagens e responda por texto ou áudio, direto pelo entalho.</p></article>
+          <article class="feature-card reveal" data-spotlight><span class="feature-corner">03 / IA</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-screen"/></svg></div><h3>IA que olha sua tela</h3><p>Selecione uma região da tela e peça explicações, traduções ou ajuda contextual.</p></article>
+          <article class="feature-card reveal delay-1" data-spotlight><span class="feature-corner">04 / ARQUIVOS</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-files"/></svg></div><h3>Arraste. Solte. Converta.</h3><p>Transforme documentos e imagens com um gesto, sem abrir outro aplicativo.</p></article>
+          <article class="feature-card reveal delay-2" data-spotlight><span class="feature-corner">05 / ROTINA</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-calendar"/></svg></div><h3>Sua rotina organizada</h3><p>Agenda, lembretes, timers e hábitos para não perder o ritmo.</p></article>
+          <article class="feature-card reveal" data-spotlight><span class="feature-corner">06 / MÚSICA</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-music"/></svg></div><h3>Música no comando de voz</h3><p>Peça uma música e deixe o Pingo cuidar do Spotify.</p></article>
+          <article class="feature-card reveal delay-1" data-spotlight><span class="feature-corner">07 / AUTOMAÇÕES</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-lightning"/></svg></div><h3>Rotinas do seu jeito</h3><p>Reúna várias ações em um só comando, do seu jeito de trabalhar.</p></article>
+          <article class="feature-card reveal delay-2" data-spotlight><span class="feature-corner">08 / LIBERDADE</span><div class="feature-icon"><svg aria-hidden="true"><use href="#i-spark"/></svg></div><h3>IA quando você quiser</h3><p>Conecte um serviço de IA opcional para perguntas e tarefas mais complexas.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="section commands-section" id="experimente" aria-labelledby="commands-title">
+      <div class="container"><div class="commands-panel reveal">
+        <div><span class="eyebrow">Sinta a experiência</span><h2 id="commands-title">Você fala.<br><span class="gradient-text">O Pingo faz.</span></h2><p>Escolha um exemplo e veja como a conversa pode acontecer. Esta é uma simulação interativa dos recursos.</p>
+          <div class="examples" aria-label="Exemplos de comandos"><button class="example-button active" type="button" data-example="0" aria-pressed="true">“Toca minha playlist no Spotify”</button><button class="example-button" type="button" data-example="1" aria-pressed="false">“Me lembra da reunião às 15h”</button><button class="example-button" type="button" data-example="2" aria-pressed="false">“Converte esse arquivo para PDF”</button><button class="example-button" type="button" data-example="3" aria-pressed="false">“Olha minha tela e explica isso”</button></div>
+        </div>
+        <div class="example-screen"><div class="example-bar"><span><span class="accent-dot"></span> CONVERSANDO COM O PINGO</span><span>DEMONSTRAÇÃO</span></div><div class="chat-row user"><span class="chat-who">Você</span><div class="chat-bubble" id="exampleQuestion">Toca minha playlist no Spotify.</div></div><div class="chat-row bot"><span class="chat-who">💧 Pingo</span><div class="chat-bubble" id="exampleAnswer" role="status" aria-live="polite">Vou abrir o Spotify e reproduzir sua música. 🎵</div></div><div class="example-foot"><span>Exemplo ilustrativo, não conectado ao seu PC</span><span><span class="accent-dot"></span> Seu fluxo, mais simples</span></div></div>
+      </div></div>
+    </section>
+    <section class="section demos-section" id="demos" aria-labelledby="demos-title">
+      <div class="container">
+        <div class="center-heading reveal"><span class="eyebrow">Nada de promessas vagas</span><h2 class="section-title" id="demos-title">Veja o Pingo <span class="gradient-text">acontecer.</span></h2><p class="section-sub">Gravações reais das funcionalidades em ação, direto da interface do Pingo.</p></div>
+        <div class="demo-stack">
+          <article class="demo-row reveal"><div class="demo-media"><div class="video-toolbar"><div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div><strong>Pingo / Olhar a tela</strong><span class="video-tag">DEMO REAL</span></div><div class="video-stage"><video src="demos/olhar.mp4" poster="demos/olhar-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Vídeo real da função Olhar a tela do Pingo"></video></div><div class="video-foot"><span>Gravação real · IA contextual</span><button class="video-control" type="button" data-video-control aria-label="Pausar demonstração de olhar a tela">❚❚ Pausar</button></div></div><div class="demo-text"><span class="demo-kicker">01 / Inteligência visual</span><h3>Sua tela tem uma pergunta?<br><span class="gradient-text">O Pingo tem a resposta.</span></h3><p>Selecione o que está vendo e envie para a IA que você escolheu. A resposta volta para o entalho, pronta para ajudar.</p><ul class="demo-benefits"><li>Interprete textos e informações da tela</li><li>Traduza, compreenda e explore conteúdos</li><li>Controle o que você decide compartilhar com a IA</li></ul></div></article>
+          <article class="demo-row reveal"><div class="demo-media"><div class="video-toolbar"><div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div><strong>Pingo / WhatsApp</strong><span class="video-tag">DEMO REAL</span></div><div class="video-stage"><video src="demos/whatsapp.mp4" poster="demos/whatsapp-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Vídeo real da função de mensagens do WhatsApp no Pingo"></video></div><div class="video-foot"><span>Gravação real · Mensagens</span><button class="video-control" type="button" data-video-control aria-label="Pausar demonstração de WhatsApp">❚❚ Pausar</button></div></div><div class="demo-text"><span class="demo-kicker">02 / Comunicação fluida</span><h3>Continue no seu jogo.<br><span class="gradient-text">E na conversa.</span></h3><p>Receba notificações, acompanhe mensagens e responda com agilidade, sem abandonar o que estava fazendo.</p><ul class="demo-benefits"><li>Respostas por texto ou áudio</li><li>Integração com o WhatsApp no Windows</li><li>Mensagens acessíveis no topo da tela</li></ul></div></article>
+          <article class="demo-row reveal"><div class="demo-media"><div class="video-toolbar"><div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div><strong>Pingo / Conversor</strong><span class="video-tag">DEMO REAL</span></div><div class="video-stage"><video src="demos/converter.mp4" poster="demos/converter-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Vídeo real da função de conversão de arquivos do Pingo"></video></div><div class="video-foot"><span>Gravação real · Produtividade</span><button class="video-control" type="button" data-video-control aria-label="Pausar demonstração do conversor">❚❚ Pausar</button></div></div><div class="demo-text"><span class="demo-kicker">03 / Produtividade sem esforço</span><h3>Menos janelas.<br><span class="gradient-text">Mais resultado.</span></h3><p>Transforme documentos e imagens sem sair do seu fluxo de trabalho. Arraste até o Pingo e pronto.</p><ul class="demo-benefits"><li>Conversões de Word e PDF</li><li>Conversão entre formatos de imagem</li><li>Resultado salvo no seu computador</li></ul></div></article>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="como" aria-labelledby="how-title"><div class="container"><div class="center-heading reveal"><span class="eyebrow">Simples por natureza</span><h2 class="section-title" id="how-title">Sua produtividade, <span class="gradient-text">sem complicar.</span></h2><p class="section-sub">Uma experiência pensada para quem quer resolver as coisas sem ficar procurando a janela certa.</p></div><div class="how-grid"><article class="how-card reveal"><span class="how-number">01</span><h3>Chame o Pingo</h3><p>Use “Ei, Pingo”, um atalho ou passe o mouse pelo topo da tela para acessar o assistente.</p></article><article class="how-card reveal delay-1"><span class="how-number">02</span><h3>Peça o que precisa</h3><p>Fale, digite ou arraste um arquivo. O Pingo conecta seu pedido ao recurso certo.</p></article><article class="how-card reveal delay-2"><span class="how-number">03</span><h3>Continue seu dia</h3><p>Resolva pequenas tarefas sem interromper o ritmo do seu trabalho ou lazer.</p></article></div></div></section>
+    <section class="section privacy-section" id="privacidade" aria-labelledby="privacy-title"><div class="container privacy-layout"><div class="reveal"><span class="eyebrow">Privacidade de verdade</span><h2 class="section-title" id="privacy-title">Seu computador.<br><span class="gradient-text">Suas escolhas.</span></h2><p class="section-sub">O Pingo foi pensado para manter a experiência perto de você, com recursos locais e integrações online que você decide utilizar.</p><div class="privacy-note">Recursos que usam serviços externos, como IA e Spotify, dependem de conexão e podem transmitir os dados necessários ao serviço escolhido.</div></div><div class="privacy-points"><article class="privacy-point reveal"><span class="privacy-point-icon"><svg aria-hidden="true"><use href="#i-mic"/></svg></span><div><h3>Reconhecimento de voz local</h3><p>Os comandos de voz são processados no próprio Windows, sem enviar o áudio para reconhecimento em nuvem.</p></div></article><article class="privacy-point reveal delay-1"><span class="privacy-point-icon"><svg aria-hidden="true"><use href="#i-lock"/></svg></span><div><h3>Dados e preferências no PC</h3><p>Lembretes, configurações e chaves de IA são mantidos localmente, com proteção para as credenciais.</p></div></article><article class="privacy-point reveal delay-2"><span class="privacy-point-icon"><svg aria-hidden="true"><use href="#i-shield"/></svg></span><div><h3>Sem telemetria de uso</h3><p>O Pingo não depende de uma conta própria ou de enviar seu histórico de uso para servidores do projeto.</p></div></article></div></div></section>
+    <section class="section availability-section" id="disponibilidade" aria-labelledby="availability-title"><div class="container"><div class="availability-panel reveal"><span class="availability-badge">Piloto gratuito encerrado</span><h2 id="availability-title">O primeiro capítulo do Pingo <span class="gradient-text">já começou.</span></h2><p>Todas as licenças gratuitas disponibilizadas para a fase de testes já foram distribuídas. Por enquanto, não estamos recebendo novas solicitações para o piloto — mas você pode conhecer o projeto e acompanhar sua evolução.</p><div class="availability-actions"><a class="btn btn-primary" href="#demos">Assistir às demonstrações <span class="arrow" aria-hidden="true">↗</span></a><a class="btn btn-secondary" href="mailto:pingo.ia.nik0lax@gmail.com?subject=Contato%20sobre%20o%20Pingo">Entrar em contato <span class="arrow" aria-hidden="true">↗</span></a></div><p class="availability-small">Novas licenças ou datas de disponibilidade ainda não foram anunciadas.</p></div></div></section>
+  </main>
+  <footer class="site-footer"><div class="container"><div class="footer-inner"><div class="footer-brand"><a class="brand" href="#inicio"><span class="brand-mark"><svg aria-hidden="true"><use href="#pingo-mark"/></svg></span><span>Pingo<span style="color:var(--cyan)">.</span></span></a><div class="footer-caption">Tecnologia mais próxima de você. 💧</div></div><nav class="footer-links" aria-label="Links do rodapé"><a href="#recursos">Recursos</a><a href="#demos">Demonstrações</a><a href="#privacidade">Privacidade</a><a href="mailto:pingo.ia.nik0lax@gmail.com?subject=Contato%20sobre%20o%20Pingo">Contato</a></nav></div><div class="footer-bottom"><span>© <span id="year">2026</span> Gabriel Nicolas Ramos da Silva. Todos os direitos reservados.</span><span>Feito com uma gotinha. Projetado para Windows.</span></div></div></footer>
+  <script>
+    (() => {
+      'use strict';
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const header = document.getElementById('siteHeader');
+      const scrollProgress = document.getElementById('scrollProgress');
+      let scheduledScroll = false;
+      function updateScroll() {
+        const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const ratio = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+        scrollProgress.style.width = `${ratio * 100}%`;
+        header.classList.toggle('is-scrolled', window.scrollY > 18);
+        scheduledScroll = false;
+      }
+      window.addEventListener('scroll', () => {
+        if (!scheduledScroll) { requestAnimationFrame(updateScroll); scheduledScroll = true; }
+      }, { passive: true });
+      updateScroll();
+      document.getElementById('year').textContent = String(new Date().getFullYear());
 
-</main>
+      // Reveal visible content and progressively animate scroll sections.
+      const reveals = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && !reduceMotion) {
+        const revealObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); revealObserver.unobserve(entry.target); } });
+        }, { threshold: .08, rootMargin: '0px 0px -15px 0px' });
+        reveals.forEach(el => revealObserver.observe(el));
+      } else { reveals.forEach(el => el.classList.add('is-visible')); }
 
-<footer>
-  <div class="wrap">
-    <span class="brand" style="display:flex;align-items:center;gap:9px"><svg class="drop" style="width:24px;height:24px;color:var(--accent)"><use href="#drop"/></svg> Pingo</span>
-    <span>© 2026 Gabriel Nicolas Ramos da Silva · <a href="mailto:pingo.ia.nik0lax@gmail.com" style="color:var(--accent)">pingo.ia.nik0lax@gmail.com</a></span>
-    <span>Feito com uma gotinha 💧</span>
-  </div>
-</footer>
+      // Mobile navigation: close on selection, outside interaction or Escape.
+      const menuButton = document.getElementById('menuToggle');
+      const nav = document.getElementById('mainNav');
+      const setMenu = (open) => {
+        nav.classList.toggle('is-open', open);
+        menuButton.setAttribute('aria-expanded', String(open));
+        menuButton.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+      };
+      menuButton.addEventListener('click', () => setMenu(menuButton.getAttribute('aria-expanded') !== 'true'));
+      nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+      document.addEventListener('keydown', ev => { if (ev.key === 'Escape') setMenu(false); });
+      document.addEventListener('click', ev => { if (!nav.contains(ev.target) && !menuButton.contains(ev.target)) setMenu(false); });
+      window.matchMedia('(min-width: 721px)').addEventListener?.('change', evt => { if (evt.matches) setMenu(false); });
 
-<script>
-  // Aparecer suave ao rolar
-  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+      // Active section indication in navigation.
+      if ('IntersectionObserver' in window) {
+        const navMap = new Map([...document.querySelectorAll('.nav-link')].map(a => [a.hash.slice(1), a]));
+        const activeObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              navMap.forEach(a => { a.classList.remove('is-active'); a.removeAttribute('aria-current'); });
+              const a = navMap.get(entry.target.id);
+              if (a) { a.classList.add('is-active'); a.setAttribute('aria-current','location'); }
+            }
+          });
+        }, { rootMargin: '-30% 0px -55% 0px' });
+        navMap.forEach((a, id) => { const el = document.getElementById(id); if (el) activeObserver.observe(el); });
+      }
 
-  // Pedido do piloto: abre o e-mail já preenchido (funciona em site estático, sem servidor).
-  // Para receber os pedidos direto numa caixa de entrada sem abrir o e-mail do visitante,
-  // troque este bloco por um serviço grátis como o Formspree (instruções no README do site).
-  document.getElementById('pilotoForm').addEventListener('submit',function(ev){
-    ev.preventDefault();
-    const nome=document.getElementById('nome').value.trim();
-    const email=document.getElementById('email').value.trim();
-    const uso=document.getElementById('uso').value.trim();
-    if(!nome||!email){ if(!nome)document.getElementById('nome').focus(); else document.getElementById('email').focus(); return; }
-    const assunto=encodeURIComponent('Quero testar o Pingo — '+nome);
-    const corpo=encodeURIComponent('Nome: '+nome+'\nE-mail: '+email+'\nPara que vou usar: '+(uso||'(não informado)')+'\n\nGostaria de participar do piloto do Pingo.');
-    window.location.href='mailto:pingo.ia.nik0lax@gmail.com?subject='+assunto+'&body='+corpo;
-    document.getElementById('pilotoOk').style.display='block';
-  });
-</script>
+      // Hero example rotation. Display is illustrative, not a real assistant connection.
+      const heroExamples = [
+        ['Ei, Pingo, o que tenho para hoje?', 'Posso mostrar sua agenda e seus lembretes.'],
+        ['Ei, Pingo, toca minha playlist.', 'Vou abrir o Spotify para você. 🎵'],
+        ['Ei, Pingo, cria um timer de 10 minutos.', 'Timer de 10 minutos iniciado!'],
+        ['Ei, Pingo, abre o YouTube.', 'Tudo certo. Abrindo o YouTube.']
+      ];
+      const heroPrompt = document.getElementById('heroPrompt');
+      const heroReply = document.getElementById('heroReply');
+      let heroIndex = 0;
+      if (!reduceMotion) window.setInterval(() => {
+        if (document.hidden) return;
+        heroIndex = (heroIndex + 1) % heroExamples.length;
+        heroPrompt.textContent = heroExamples[heroIndex][0];
+        heroReply.textContent = heroExamples[heroIndex][1];
+      }, 4500);
+
+      // Clickable conversation examples (no tracking or network calls).
+      const examples = [
+        ['Toca minha playlist no Spotify.', 'Vou abrir o Spotify e reproduzir sua música. 🎵'],
+        ['Me lembra da reunião às 15h.', 'Combinado! Vou te lembrar da reunião às 15h. 📅'],
+        ['Converte esse arquivo para PDF.', 'Recebi seu arquivo. Vou preparar a versão em PDF. 📄'],
+        ['Olha minha tela e explica isso.', 'Selecione a área da tela que você quer analisar. 👀']
+      ];
+      const exampleButtons = document.querySelectorAll('[data-example]');
+      const exampleQuestion = document.getElementById('exampleQuestion');
+      const exampleAnswer = document.getElementById('exampleAnswer');
+      exampleButtons.forEach(button => button.addEventListener('click', () => {
+        const index = Number(button.dataset.example);
+        exampleButtons.forEach(item => { const active = item === button; item.classList.toggle('active', active); item.setAttribute('aria-pressed', String(active)); });
+        exampleQuestion.textContent = examples[index][0];
+        exampleAnswer.textContent = examples[index][1];
+      }));
+
+      // Video controls and viewport playback (reduces CPU use offscreen).
+      const videos = [...document.querySelectorAll('.demo-media video')];
+      function syncVideoButton(video) {
+        const button = video.closest('.demo-media').querySelector('[data-video-control]');
+        const playing = !video.paused;
+        button.textContent = playing ? '❚❚ Pausar' : '▶ Reproduzir';
+        button.setAttribute('aria-label', `${playing ? 'Pausar' : 'Reproduzir'} ${video.getAttribute('aria-label')}`);
+      }
+      videos.forEach(video => {
+        video.addEventListener('play', () => syncVideoButton(video));
+        video.addEventListener('pause', () => syncVideoButton(video));
+        const button = video.closest('.demo-media').querySelector('[data-video-control]');
+        button.addEventListener('click', () => {
+          if (video.paused) { video.dataset.userPaused = 'false'; video.play().catch(() => {}); }
+          else { video.dataset.userPaused = 'true'; video.pause(); }
+        });
+        if (reduceMotion) { video.autoplay = false; video.pause(); syncVideoButton(video); }
+      });
+      if ('IntersectionObserver' in window && !reduceMotion) {
+        const videoObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+          const video = entry.target;
+          if (entry.isIntersecting && video.dataset.userPaused !== 'true') video.play().catch(() => {});
+          else if (!entry.isIntersecting) video.pause();
+        }), { threshold: .1 });
+        videos.forEach(video => videoObserver.observe(video));
+      }
+
+      // Pointer spotlight: desktop only, and disabled for reduced motion.
+      if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        const pointerGlow = document.getElementById('pointerGlow');
+        let glowFrame = false; let mx = 0; let my = 0;
+        window.addEventListener('pointermove', ev => {
+          mx = ev.clientX; my = ev.clientY;
+          if (!glowFrame) requestAnimationFrame(() => { pointerGlow.style.left = `${mx}px`; pointerGlow.style.top = `${my}px`; pointerGlow.style.opacity = '1'; glowFrame = false; });
+          glowFrame = true;
+        }, { passive: true });
+        document.querySelectorAll('[data-spotlight]').forEach(el => {
+          el.addEventListener('pointermove', ev => {
+            const rect = el.getBoundingClientRect();
+            el.style.setProperty('--mx', `${ev.clientX - rect.left}px`);
+            el.style.setProperty('--my', `${ev.clientY - rect.top}px`);
+          }, { passive: true });
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
